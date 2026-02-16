@@ -1,0 +1,75 @@
+# Dependencies
+node_modules/
+
+# Environment variables (secrets)
+.env
+.env*.local
+
+# Claude Code
+.claude/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+nul
+
+# Expo
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Native generated folders (Expo generates these)
+DON/ios/
+DON/android/
+
+# Old bare React Native project files at root
+android/
+ios/
+
+# Metro
+.metro-health-check*
+
+# Build & cache
+build/
+.gradle/
+*.hprof
+.cxx/
+*.jsbundle
+coverage/
+*.tsbuildinfo
+
+# Gradle
+*.keystore
+!debug.keystore
+local.properties
+
+# Certificates & keys
+*.jks
+*.p8
+*.p12
+*.key
+*.pem
+*.mobileprovision
+
+# Temp files
+TempWrapper/
+
+# Debug logs
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# TypeScript build
+DON-server/dist/
+
+# Admin web build
+admin-web/dist/
+admin-web/node_modules/

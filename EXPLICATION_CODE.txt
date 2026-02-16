@@ -1,0 +1,443 @@
+================================================================================
+                    EXPLICATION DU CODE - DON APP
+                    Langage simple et direct
+================================================================================
+
+
+================================================================================
+1. C'EST QUOI CETTE APP ?
+================================================================================
+
+C'est une application mobile Android pour faire des dons.
+
+- On voit une liste de personnes qui ont besoin d'aide (demandeurs)
+- On peut leur donner de l'argent (1€, 5€, 10€, etc.)
+- On peut aussi créer une demande d'aide soi-meme
+- Un admin peut valider les demandes
+
+L'app a 3 onglets en bas :
+  - Accueil : voir les demandeurs et donner
+  - Demandeur : creer une demande d'aide
+  - Profil : parametres et reset des donnees
+
+
+================================================================================
+2. COMMENT L'APP EST ORGANISEE ? (les dossiers)
+================================================================================
+
+src/
+  |
+  |-- theme/          --> Les couleurs, les tailles, les polices
+  |                       (tout le "look" de l'app)
+  |
+  |-- domain/         --> Les "formes" des donnees
+  |                       (a quoi ressemble un don, un demandeur, etc.)
+  |
+  |-- db/             --> La base de donnees (stockage sur le telephone)
+  |   |-- client.ts        --> ouvre/ferme la base de donnees
+  |   |-- schema.ts        --> cree les tables (comme un tableau Excel)
+  |   |-- seed.ts          --> remplit la base avec des donnees de demo
+  |   |-- repositories/    --> les fonctions pour lire/ecrire dans la base
+  |
+  |-- store/          --> La "memoire vive" de l'app
+  |                       (ce que l'app retient pendant qu'elle tourne)
+  |
+  |-- components/     --> Les "briques" visuelles reutilisables
+  |                       (boutons, cartes, barres de progression, etc.)
+  |
+  |-- screens/        --> Les ecrans (ce qu'on voit dans chaque onglet)
+  |
+  |-- navigation/     --> La navigation (les 3 onglets en bas)
+  |
+  |-- utils/          --> Des petits outils (formater les euros, etc.)
+
+
+================================================================================
+3. LE THEME (src/theme/)
+================================================================================
+
+Fichier : colors.ts
+-------------------
+C'est la palette de couleurs de l'app.
+Exemple :
+  - primary = "#0EA5A4"   --> le vert-bleu medical (couleur principale)
+  - background = "#F6FAFB" --> le fond gris tres clair
+  - error = "#EF4444"      --> le rouge pour les erreurs
+
+Pourquoi ? Pour que toute l'app utilise les memes couleurs.
+Si on veut changer le vert, on le change ICI et ca change partout.
+
+Fichier : spacing.ts
+--------------------
+Les espaces entre les elements :
+  - sm = 8 pixels (petit espace)
+  - lg = 16 pixels (grand espace)
+  - xl = 24 pixels (tres grand espace)
+
+Fichier : typography.ts
+-----------------------
+Les styles de texte :
+  - h1 = gros titre (28px, gras)
+  - body = texte normal (16px)
+  - caption = petit texte gris (12px)
+
+Fichier : shadows.ts
+--------------------
+Les ombres legeres sous les cartes pour donner un effet de relief.
+
+
+================================================================================
+4. LES MODELES DE DONNEES (src/domain/models.ts)
+================================================================================
+
+C'est la "forme" de chaque objet dans l'app.
+
+Un DEMANDEUR (Applicant) c'est :
+  - id : un numero unique
+  - fullName : son nom complet
+  - city : sa ville
+  - shortStory : pourquoi il a besoin d'aide
+  - validated : est-ce qu'un admin l'a valide ? (oui/non)
+  - goalCents : combien il veut collecter (en centimes)
+  - collectedCents : combien il a deja recu (en centimes)
+
+Un DON (Donation) c'est :
+  - id : un numero unique
+  - amountCents : le montant en centimes (500 = 5€)
+  - createdAt : la date du don
+  - applicantId : pour quel demandeur (ou null si don general)
+
+Un UTILISATEUR (User) c'est :
+  - displayName : le nom affiche
+  - email : son email
+  - notificationsEnabled : notifs activees ou pas
+
+POURQUOI EN CENTIMES ?
+  Parce que les calculs avec des decimales (1.50€) causent des erreurs
+  en informatique. Avec des centimes (150), on travaille avec des
+  nombres entiers = zero erreur de calcul.
+
+
+================================================================================
+5. LA BASE DE DONNEES (src/db/)
+================================================================================
+
+L'app utilise SQLite = une mini base de donnees stockee directement
+sur le telephone. Pas besoin d'internet.
+
+Fichier : schema.ts
+--------------------
+Cree 4 tables (comme des tableaux Excel) :
+  - donations : tous les dons
+  - applicants : tous les demandeurs
+  - user : l'utilisateur
+  - meta : pour savoir si la base a deja ete remplie
+
+Fichier : client.ts
+--------------------
+Ouvre la base de donnees et permet d'executer des commandes SQL.
+C'est le "pont" entre l'app et la base.
+
+Fichier : seed.ts
+------------------
+Remplit la base avec des donnees de demo au premier lancement :
+  - 6 demandeurs valides (avec des histoires)
+  - 3 demandeurs en attente
+  - Des dons pour un total d'environ 12 450€
+  - Un utilisateur de demo
+
+Il verifie d'abord si c'est deja fait (table "meta", cle "seeded")
+pour ne pas re-remplir a chaque fois qu'on ouvre l'app.
+
+Fichier : repositories/ (le dossier)
+-------------------------------------
+Chaque fichier gere UNE table :
+
+  donationRepository.ts :
+    - getAll() : recuperer tous les dons
+    - getTotalAmount() : calculer le total
+    - create() : creer un nouveau don
+
+  applicantRepository.ts :
+    - getValidated() : recuperer les demandeurs valides
+    - getPending() : recuperer les demandeurs en attente
+    - create() : creer un nouveau demandeur
+    - validate() : valider un demandeur
+    - addCollected() : ajouter de l'argent collecte
+
+  userRepository.ts :
+    - get() : recuperer l'utilisateur
+    - update() : modifier les parametres
+
+REGLE IMPORTANTE :
+  Les ecrans ne parlent JAMAIS directement a la base de donnees.
+  Ils passent toujours par le store, qui passe par les repositories.
+  C'est comme une chaine : Ecran → Store → Repository → Base de donnees
+
+
+================================================================================
+6. LES STORES (src/store/) - LA MEMOIRE DE L'APP
+================================================================================
+
+On utilise Zustand = une librairie tres simple pour gerer l'etat.
+
+C'est quoi un "etat" ?
+  C'est ce que l'app "sait" a un moment donne.
+  Exemple : la liste des demandeurs, le total des dons, etc.
+
+donationStore.ts :
+  - totalCents : le total de tous les dons
+  - loadTotal() : charge le total depuis la base
+  - createDonation() : fait un don (ecrit en base + met a jour le total)
+
+applicantStore.ts :
+  - validatedApplicants : liste des demandeurs valides
+  - pendingApplicants : liste des demandeurs en attente
+  - loadValidated() : charge les demandeurs valides
+  - createApplicant() : cree un nouveau demandeur
+  - validateApplicant() : valide un demandeur
+
+userStore.ts :
+  - user : les infos de l'utilisateur
+  - isAdminMode : est-ce qu'on est en mode admin
+  - toggleAdminMode() : active/desactive le mode admin
+
+Quand un store change, tous les ecrans qui l'utilisent se mettent
+a jour automatiquement. C'est la magie de Zustand.
+
+
+================================================================================
+7. LES COMPOSANTS (src/components/) - LES BRIQUES VISUELLES
+================================================================================
+
+Ce sont des morceaux d'interface reutilisables.
+Comme des Legos : on les assemble pour construire les ecrans.
+
+Card.tsx :
+  Une carte blanche avec des coins arrondis et une ombre.
+  Utilisee partout pour entourer du contenu.
+
+PrimaryButton.tsx :
+  Un bouton colore. Peut etre :
+  - "primary" (vert) / "secondary" (bleu) / "outline" (bordure)
+  - "small" / "medium" / "large"
+  - avec un spinner de chargement
+
+Input.tsx :
+  Un champ de texte avec un label au-dessus et un message d'erreur
+  en rouge en dessous si besoin.
+
+MoneyInput.tsx :
+  Un champ special pour entrer un montant en euros.
+  Il n'accepte que des chiffres et affiche le symbole €.
+
+ProgressBar.tsx :
+  Une barre de progression coloree.
+  Exemple : si on a collecte 3000€ sur 5000€, la barre est a 60%.
+
+Badge.tsx :
+  Un petit badge colore pour afficher un statut.
+  Exemple : "Valide" (vert) ou "En attente" (orange).
+
+Loading.tsx :
+  Un spinner avec un message "Chargement..." affiche pendant
+  que les donnees se chargent.
+
+EmptyState.tsx :
+  Un message affiche quand une liste est vide.
+  Exemple : "Aucune demande" avec une icone.
+
+TotalBanner.tsx :
+  La grande banniere verte en haut de l'accueil qui affiche
+  le total des dons. Exemple : "12 450 €".
+
+ApplicantCard.tsx :
+  La carte d'un demandeur avec :
+  - son nom et sa ville
+  - son histoire
+  - la barre de progression (collecte / objectif)
+  - un bouton "Donner"
+
+DonationBottomSheet.tsx :
+  Le panneau qui apparait en bas de l'ecran quand on clique "Donner".
+  Il contient :
+  - des boutons rapides (1€, 5€, 10€, 20€)
+  - un champ pour entrer un montant libre
+  - un bouton "Confirmer"
+
+
+================================================================================
+8. LES ECRANS (src/screens/)
+================================================================================
+
+HomeScreen.tsx (Onglet "Accueil") :
+-----------------------------------
+  Ce qu'on voit :
+    - La banniere "Total des dons" en haut
+    - La liste des demandeurs valides (scrollable)
+    - Chaque demandeur a un bouton "Donner"
+
+  Ce qui se passe quand on clique "Donner" :
+    1. Le bottom sheet s'ouvre
+    2. On choisit un montant
+    3. On confirme
+    4. Le don est enregistre en base
+    5. Le total et la barre de progression se mettent a jour
+
+  On peut aussi tirer vers le bas pour rafraichir la liste.
+
+ApplicantScreen.tsx (Onglet "Demandeur") :
+------------------------------------------
+  Ce qu'on voit :
+    - Un formulaire pour creer une demande d'aide
+    - La liste de ses demandes avec leur statut
+    - Un toggle "Mode admin"
+
+  Le formulaire demande :
+    - Nom complet (obligatoire)
+    - Ville (obligatoire)
+    - Histoire (minimum 10 caracteres)
+    - Objectif en euros (minimum 50€)
+
+  La validation est faite avec Zod (une librairie qui verifie
+  que les donnees sont correctes avant de les envoyer).
+
+  Le mode admin :
+    Quand on l'active, un bouton "Valider" apparait sur chaque
+    demande en attente. Quand on valide, le demandeur apparait
+    sur l'ecran d'accueil.
+
+ProfileScreen.tsx (Onglet "Profil") :
+-------------------------------------
+  Ce qu'on voit :
+    - Le nom et l'email de l'utilisateur
+    - Un toggle pour les notifications
+    - Un bouton "Reinitialiser les donnees"
+
+  Le bouton de reinitialisation :
+    - Demande confirmation
+    - Vide toute la base de donnees
+    - Re-remplit avec les donnees de demo
+    - Remet tous les stores a zero
+
+
+================================================================================
+9. LA NAVIGATION (src/navigation/)
+================================================================================
+
+On utilise React Navigation avec des "Bottom Tabs" = des onglets en bas.
+
+3 onglets :
+  - Accueil (icone maison)
+  - Demandeur (icone document)
+  - Profil (icone personne)
+
+L'onglet actif est colore en vert (primary), les autres en gris.
+
+
+================================================================================
+10. LES UTILITAIRES (src/utils/)
+================================================================================
+
+formatCurrency.ts :
+  Des fonctions pour afficher les centimes en euros lisibles.
+
+  formatCentsToEuros(125000) --> "1 250 €"
+
+  On utilise Intl.NumberFormat('fr-FR') qui formate automatiquement
+  avec les espaces et le symbole € a la francaise.
+
+  eurosToCents(5) --> 500
+  centsToEuros(500) --> 5
+
+
+================================================================================
+11. LE FICHIER APP (src/App.tsx) - LE POINT DE DEPART
+================================================================================
+
+C'est le premier fichier qui se lance. Voici ce qu'il fait :
+
+  1. Initialise la base de donnees (cree les tables + seed si necessaire)
+  2. Affiche un ecran de chargement pendant l'initialisation
+  3. Si erreur : affiche un message d'erreur
+  4. Si tout va bien : affiche la navigation avec les 3 onglets
+
+
+================================================================================
+12. LE COTE ANDROID (dossier android/)
+================================================================================
+
+build.gradle (racine) :
+  Configure les versions des outils :
+  - Android SDK 34
+  - Kotlin 1.9.22
+  - Android Gradle Plugin 8.2.1
+
+app/build.gradle :
+  Configure l'application :
+  - Nom du package : com.donapp
+  - SDK minimum : 23 (Android 6.0)
+  - Inclut les polices d'icones (vector-icons)
+  - Force AndroidX Core en version 1.13.1 (pour compatibilite)
+
+AndroidManifest.xml :
+  Declare l'application avec :
+  - La permission Internet
+  - L'activite principale (MainActivity)
+  - Le theme et l'icone
+
+MainActivity.kt / MainApplication.kt :
+  Le code Kotlin qui demarre React Native.
+  On n'y touche quasiment jamais.
+
+
+================================================================================
+13. COMMENT TOUT FONCTIONNE ENSEMBLE (le flux)
+================================================================================
+
+Exemple : quelqu'un fait un don de 5€ a Marie
+
+  1. L'utilisateur clique "Donner" sur la carte de Marie
+     --> HomeScreen ouvre le DonationBottomSheet
+
+  2. Il clique sur le bouton "5€" puis "Confirmer"
+     --> DonationBottomSheet appelle onConfirm(500, marieId)
+
+  3. HomeScreen appelle donationStore.createDonation()
+     --> Le store appelle donationRepository.create()
+         qui ecrit en base : INSERT INTO donations (500, maintenant, marieId)
+     --> Le store appelle applicantRepository.addCollected(marieId, 500)
+         qui met a jour Marie en base : collectedCents += 500
+
+  4. Le store recharge le total et la liste
+     --> totalCents se met a jour
+     --> La carte de Marie se met a jour (barre de progression avance)
+
+  5. L'interface se re-affiche automatiquement car le store a change
+
+
+================================================================================
+14. LES LIBRAIRIES UTILISEES (et pourquoi)
+================================================================================
+
+react-native : le framework pour faire des apps mobiles avec JavaScript
+react-navigation : pour la navigation entre les ecrans
+zustand : pour gerer l'etat de l'app (simple et leger)
+react-native-sqlite-storage : pour la base de donnees locale
+react-hook-form : pour gerer les formulaires facilement
+zod : pour valider les donnees des formulaires
+react-native-vector-icons : pour les icones (coeur, maison, etc.)
+react-native-gesture-handler : pour les gestes tactiles
+react-native-screens : pour optimiser les ecrans
+react-native-safe-area-context : pour eviter les encoches des telephones
+
+
+================================================================================
+15. RESUME EN UNE PHRASE
+================================================================================
+
+L'app charge des donnees depuis SQLite, les met dans des stores Zustand,
+et les affiche avec des composants React Native dans 3 ecrans navigables.
+
+C'est tout !
+================================================================================

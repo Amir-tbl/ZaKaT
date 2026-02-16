@@ -1,0 +1,70 @@
+{
+  "project_info": {
+    "project_number": "1026513048742",
+    "project_id": "zakat-8e5a4",
+    "storage_bucket": "zakat-8e5a4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1026513048742:android:4031392e3e5fb87acbd067",
+        "android_client_info": {
+          "package_name": "com.tab.amir.don"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1026513048742-2h2ipnsu599spn775r2157gf037hf65h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tab.amir.don",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "1026513048742-alep2a2ovujbh240hmnju43jreckhgej.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tab.amir.don",
+            "certificate_hash": "1cdb44de8628339198f0dc6ac08d5f36cb01253e"
+          }
+        },
+        {
+          "client_id": "1026513048742-rm1mhmj36nh5q3599s7v36mkf6h5efbr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tab.amir.don",
+            "certificate_hash": "aa14ee8c66a637429aaf862f3af8051ff7536867"
+          }
+        },
+        {
+          "client_id": "1026513048742-1bhdrn7mcatbuvh9260ld2ldn0621duj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNvwd6Ln9dPZHuJrDT86wefdZcfbZee8A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1026513048742-1bhdrn7mcatbuvh9260ld2ldn0621duj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1026513048742-dv4kjn24kjrc9ekpvmps30bp1j118s2t.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.tab.amir.don"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

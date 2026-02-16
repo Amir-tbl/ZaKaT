@@ -1,0 +1,268 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ============================================
+    // HELPER FUNCTIONS
+    // ============================================
+
+    // Check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Check if user is the document owner
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Check if user is admin (via admins collection)
+    function isAdmin() {
+      return isAuthenticated() &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // Check if organization is verified
+    function isOrgVerified(orgId) {
+      return get(/databases/$(database)/documents/organizations/$(orgId)).data.status == 'verified';
+    }
+
+    // Check if current user is from a verified organization
+    function isUserOrgVerified() {
+      let userDoc = get(/databases/$(database)/documents/users/$(request.auth.uid));
+      return userDoc.data.accountType == 'organization' && userDoc.data.orgStatus == 'verified';
+    }
+
+    // Prevent modification of sensitive fields
+    function notChangingStatus() {
+      return !request.resource.data.diff(resource.data).affectedKeys()
+        .hasAny(['status', 'reviewedAt', 'reviewedBy', 'reviewNote', 'orgStatus']);
+    }
+
+    // Prevent modification of donation counters
+    function notChangingCounters() {
+      return !request.resource.data.diff(resource.data).affectedKeys()
+        .hasAny(['receivedAmountCents', 'donorCount', 'walletBalanceCents']);
+    }
+
+    // Check if only changing counter fields (for donation updates)
+    function onlyChangingCounters() {
+      return request.resource.data.diff(resource.data).affectedKeys()
+        .hasOnly(['receivedAmountCents', 'donorCount']);
+    }
+
+    // ============================================
+    // ADMINS COLLECTION
+    // ============================================
+    match /admins/{adminId} {
+      // Users can check if they themselves are admin (read their own doc only)
+      // This allows the app to check admin status without circular permission issues
+      allow read: if isAuthenticated() && request.auth.uid == adminId;
+      // No client-side writes - managed via Firebase Console or Cloud Functions
+      allow write: if false;
+    }
+
+    // ============================================
+    // USERS COLLECTION
+    // ============================================
+    match /users/{userId} {
+      // Users can read their own profile
+      // Admins can read any profile
+      // Public can read basic info for display purposes
+      allow read: if isOwner(userId) || isAdmin() || true;
+
+      // Users can create their own profile
+      allow create: if isOwner(userId) &&
+        request.resource.data.accountType in ['individual', 'organization'];
+
+      // Users can update their own profile (except status fields)
+      allow update: if isOwner(userId) && notChangingStatus();
+
+      // Users can delete their own profile, admins can delete any
+      allow delete: if isOwner(userId) || isAdmin();
+    }
+
+    // ============================================
+    // ORGANIZATIONS COLLECTION
+    // ============================================
+    match /organizations/{orgId} {
+      // Public can read verified organizations
+      // Admins can read all
+      // Owner can read their own
+      allow read: if resource.data.status == 'verified' ||
+                    isAdmin() ||
+                    isOwner(resource.data.ownerUid);
+
+      // Authenticated users can create an organization
+      allow create: if isAuthenticated() &&
+        request.resource.data.ownerUid == request.auth.uid &&
+        request.resource.data.status == 'pending';
+
+      // Owner can update (except status/review fields)
+      // Admin can update anything
+      allow update: if (isOwner(resource.data.ownerUid) && notChangingStatus() && notChangingCounters()) ||
+                       isAdmin();
+
+      // Only admins can delete
+      allow delete: if isAdmin();
+    }
+
+    // ============================================
+    // POSTS COLLECTION
+    // ============================================
+    match /posts/{postId} {
+      // Public can read verified posts
+      // Admins can read all
+      // Author can read their own
+      allow read: if resource.data.status == 'verified' ||
+                    isAdmin() ||
+                    isOwner(resource.data.authorUid);
+
+      // Authenticated users can create posts
+      // Verified organizations can create with status 'verified' directly
+      allow create: if isAuthenticated() &&
+        request.resource.data.authorUid == request.auth.uid &&
+        (request.resource.data.status == 'pending' ||
+         (request.resource.data.status == 'verified' && isUserOrgVerified()));
+
+      // Author can update (except status/review fields)
+      // Admin can update anything
+      allow update: if (isOwner(resource.data.authorUid) && notChangingStatus()) ||
+                       isAdmin();
+
+      // Author or admin can delete
+      allow delete: if isOwner(resource.data.authorUid) || isAdmin();
+    }
+
+    // ============================================
+    // REQUESTS COLLECTION
+    // ============================================
+    match /requests/{requestId} {
+      // Public can read verified requests
+      // Admins can read all
+      // Author can read their own
+      allow read: if resource.data.status == 'verified' ||
+                    isAdmin() ||
+                    isOwner(resource.data.authorUid);
+
+      // Authenticated users can create requests
+      // Verified organizations can create with status 'verified' directly
+      allow create: if isAuthenticated() &&
+        request.resource.data.authorUid == request.auth.uid &&
+        (request.resource.data.status == 'pending' ||
+         (request.resource.data.status == 'verified' && isUserOrgVerified())) &&
+        request.resource.data.receivedAmountCents == 0 &&
+        request.resource.data.donorCount == 0;
+
+      // Author can update (except status/review/counter fields)
+      // Admin can update anything
+      // Authenticated users can update ONLY counter fields (for donations)
+      allow update: if (isOwner(resource.data.authorUid) && notChangingStatus() && notChangingCounters()) ||
+                       isAdmin() ||
+                       (isAuthenticated() && onlyChangingCounters());
+
+      // Author or admin can delete
+      allow delete: if isOwner(resource.data.authorUid) || isAdmin();
+    }
+
+    // ============================================
+    // DONATIONS COLLECTION
+    // ============================================
+    match /donations/{donationId} {
+      // Donors can read their own donations
+      // Admins can read all
+      allow read: if isOwner(resource.data.donorUid) || isAdmin();
+
+      // Authenticated users can create donations
+      // Note: Counter updates should be done via Cloud Functions
+      allow create: if isAuthenticated() &&
+        request.resource.data.donorUid == request.auth.uid;
+
+      // No updates allowed - donations are immutable
+      allow update: if false;
+
+      // Only admins can delete (for refunds, etc.)
+      allow delete: if isAdmin();
+    }
+
+    // ============================================
+    // FOLLOWS COLLECTION
+    // ============================================
+    match /follows/{followId} {
+      // Public can read follows for counts
+      allow read: if true;
+
+      // Authenticated users can create follows
+      allow create: if isAuthenticated() &&
+        request.resource.data.followerUid == request.auth.uid;
+
+      // No updates - follows are immutable
+      allow update: if false;
+
+      // Follower can delete (unfollow)
+      allow delete: if isOwner(resource.data.followerUid);
+    }
+
+    // ============================================
+    // NOTIFICATIONS COLLECTION
+    // ============================================
+    match /notifications/{notifId} {
+      // User can read their own notifications
+      allow read: if isOwner(resource.data.userId);
+
+      // Only Cloud Functions create notifications
+      allow create: if false;
+
+      // User can mark as read
+      allow update: if isOwner(resource.data.userId) &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read']);
+
+      // User can delete their notifications
+      allow delete: if isOwner(resource.data.userId);
+    }
+
+    // ============================================
+    // TREASURY COLLECTION (singleton)
+    // ============================================
+    match /treasury/{docId} {
+      // Public can read treasury balance
+      allow read: if true;
+
+      // Authenticated users can create treasury doc if it doesn't exist
+      allow create: if isAuthenticated();
+
+      // Authenticated users can update treasury for donations (increment only)
+      // Admins can do anything
+      allow update: if isAuthenticated() || isAdmin();
+
+      // Only admins can delete
+      allow delete: if isAdmin();
+    }
+
+    // ============================================
+    // PASSWORD RESET CODES (managed by Cloud Functions only)
+    // ============================================
+    match /passwordResetCodes/{codeId} {
+      allow read, write: if false;
+    }
+
+    // ============================================
+    // REPORTS COLLECTION
+    // ============================================
+    match /reports/{reportId} {
+      // Only admins can read reports
+      allow read: if isAdmin();
+
+      // Authenticated users can create reports
+      allow create: if isAuthenticated() &&
+        request.resource.data.reporterUserId == request.auth.uid &&
+        request.resource.data.status == 'pending';
+
+      // Only admins can update (to change status, add notes)
+      allow update: if isAdmin();
+
+      // Only admins can delete
+      allow delete: if isAdmin();
+    }
+  }
+}

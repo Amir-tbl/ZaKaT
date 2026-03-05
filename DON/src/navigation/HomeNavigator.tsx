@@ -9,9 +9,11 @@ import {OrganizationProfileScreen} from '../screens/OrganizationProfileScreen';
 import {MediaViewerScreen} from '../screens/MediaViewerScreen';
 import {NotificationsScreen} from '../screens/NotificationsScreen';
 import {UserProfileScreen} from '../screens/UserProfileScreen';
+import {SearchScreen} from '../screens/SearchScreen';
 
 export type HomeStackParamList = {
   HomeMain: undefined;
+  Search: undefined;
   RequestDetail: {requestId: string; from?: 'explorer'};
   PostDetail: {postId: string; from?: 'explorer'};
   PdfViewer: {uri: string; title: string};
@@ -36,6 +38,7 @@ export function HomeNavigator() {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name="HomeMain" component={HomeScreen} />
+      <Stack.Screen name="Search" component={SearchScreen} />
       <Stack.Screen name="RequestDetail" component={RequestDetailScreen} />
       <Stack.Screen name="PostDetail" component={PostDetailScreen} />
       <Stack.Screen name="PdfViewer" component={PdfViewerScreen} />

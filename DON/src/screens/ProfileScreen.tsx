@@ -60,7 +60,7 @@ const ProfileStats = memo(function ProfileStats({
       <View style={styles.statDivider} />
       <TouchableOpacity style={styles.statItem} onPress={onPressFollowers} activeOpacity={0.7}>
         <Text style={styles.statValue}>{followersCount}</Text>
-        <Text style={styles.statLabel}>Abonnes</Text>
+        <Text style={styles.statLabel}>Abonnés</Text>
       </TouchableOpacity>
       <View style={styles.statDivider} />
       <TouchableOpacity style={styles.statItem} onPress={onPressFollowing} activeOpacity={0.7}>
@@ -121,9 +121,9 @@ interface RequestCardProps {
 
 const STATUS_BADGE: Record<string, {text: string; variant: 'info' | 'success' | 'warning' | 'error'}> = {
   pending: {text: 'En attente', variant: 'warning'},
-  verified: {text: 'Verifiee', variant: 'success'},
-  rejected: {text: 'Refusee', variant: 'error'},
-  closed: {text: 'Fermee', variant: 'info'},
+  verified: {text: 'Vérifiée', variant: 'success'},
+  rejected: {text: 'Refusée', variant: 'error'},
+  closed: {text: 'Fermée', variant: 'info'},
 };
 
 const RequestCard = memo(function RequestCard({request, onPress}: RequestCardProps) {
@@ -193,6 +193,7 @@ export function ProfileScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>('publications');
+  const [totalCollectedCents, setTotalCollectedCents] = useState(0);
 
   const loadData = useCallback(async () => {
     try {
@@ -222,6 +223,13 @@ export function ProfileScreen() {
         setFollowersCount(followers);
         setFollowingCount(following);
         setUnreadNotifCount(unreadNotifs);
+
+        // Calculate total collected across all requests
+        const total = userRequests.reduce(
+          (sum, req) => sum + (req.receivedAmountCents || 0),
+          0,
+        );
+        setTotalCollectedCents(total);
       }
     } catch (error) {
       console.warn('Erreur chargement profil:', error);
@@ -380,6 +388,30 @@ export function ProfileScreen() {
           </TouchableOpacity>
         </View>
 
+        {/* Earnings section */}
+        {totalCollectedCents > 0 && (
+          <View style={styles.earningsSection}>
+            <View style={styles.earningsInfo}>
+              <MaterialCommunityIcons name="wallet" size={20} color={colors.primary} />
+              <Text style={styles.earningsLabel}>Récolte totale :</Text>
+              <Text style={styles.earningsAmount}>
+                {new Intl.NumberFormat('fr-FR', {
+                  style: 'currency',
+                  currency: 'EUR',
+                  minimumFractionDigits: 0,
+                  maximumFractionDigits: 0,
+                }).format(totalCollectedCents / 100)}
+              </Text>
+            </View>
+            <TouchableOpacity
+              style={styles.withdrawBtn}
+              onPress={() => navigation.navigate('Withdraw')}>
+              <MaterialCommunityIcons name="bank-transfer-out" size={16} color={colors.surface} />
+              <Text style={styles.withdrawBtnText}>Retirer mes gains</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
         {/* Tabs */}
         <View style={styles.tabs}>
           <TouchableOpacity
@@ -412,11 +444,11 @@ export function ProfileScreen() {
           <MaterialCommunityIcons name="camera-plus" size={48} color={colors.border} />
           <Text style={styles.emptyStateTitle}>Aucune publication</Text>
           <Text style={styles.emptyStateText}>
-            Partagez votre premiere publication
+            Partagez votre première publication
           </Text>
           <TouchableOpacity style={styles.emptyStateBtn} onPress={openCreatePublication}>
             <MaterialCommunityIcons name="plus" size={18} color="#fff" />
-            <Text style={styles.emptyStateBtnText}>Partager ma premiere publication</Text>
+            <Text style={styles.emptyStateBtnText}>Partager ma première publication</Text>
           </TouchableOpacity>
         </View>
       );
@@ -439,8 +471,8 @@ export function ProfileScreen() {
           <Text style={styles.emptyStateTitle}>Aucune demande</Text>
           <Text style={styles.emptyStateText}>
             {isOrg
-              ? 'Les associations recoivent les dons via leur profil'
-              : 'Creez votre premiere demande d\'aide'}
+              ? 'Les associations reçoivent les dons via leur profil'
+              : 'Créez votre première demande d\'aide'}
           </Text>
           {!isOrg && (
             <TouchableOpacity style={styles.emptyStateBtn} onPress={openCreateRequest}>
@@ -655,6 +687,47 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.sm,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  // Earnings section
+  earningsSection: {
+    marginHorizontal: spacing.lg,
+    marginBottom: spacing.md,
+    backgroundColor: colors.primary + '08',
+    borderRadius: borderRadius.md,
+    padding: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.primary + '20',
+  },
+  earningsInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    marginBottom: spacing.sm,
+  },
+  earningsLabel: {
+    ...typography.body,
+    color: colors.text,
+    fontWeight: '500',
+  },
+  earningsAmount: {
+    ...typography.body,
+    color: colors.primary,
+    fontWeight: '700',
+  },
+  withdrawBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.xs,
+    backgroundColor: colors.primary,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.lg,
+    borderRadius: borderRadius.sm,
+  },
+  withdrawBtnText: {
+    ...typography.bodySmall,
+    color: colors.surface,
+    fontWeight: '600',
   },
   // Tabs
   tabs: {

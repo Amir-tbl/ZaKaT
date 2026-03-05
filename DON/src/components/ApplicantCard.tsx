@@ -60,7 +60,7 @@ export function ApplicantCard({applicant, onDonate}: ApplicantCardProps) {
       {isCompleted ? (
         <View style={styles.completedBanner}>
           <MaterialCommunityIcons name="check-circle" size={22} color={colors.success} />
-          <Text style={styles.completedText}>Termine !</Text>
+          <Text style={styles.completedText}>Terminé !</Text>
         </View>
       ) : (
         <PrimaryButton

@@ -138,7 +138,7 @@ export function CreateRequestScreen({navigation}: Props) {
 
   async function pickPhotos() {
     if (totalFiles >= MAX_FILES) {
-      Alert.alert('Limite', `Maximum ${MAX_FILES} fichiers autorises.`);
+      Alert.alert('Limite', `Maximum ${MAX_FILES} fichiers autorisés.`);
       return;
     }
 
@@ -164,7 +164,7 @@ export function CreateRequestScreen({navigation}: Props) {
 
   async function pickDocument() {
     if (totalFiles >= MAX_FILES) {
-      Alert.alert('Limite', `Maximum ${MAX_FILES} fichiers autorises.`);
+      Alert.alert('Limite', `Maximum ${MAX_FILES} fichiers autorisés.`);
       return;
     }
 
@@ -197,7 +197,7 @@ export function CreateRequestScreen({navigation}: Props) {
     if (!title.trim()) return 'Le titre est requis.';
     if (!description.trim()) return 'La description est requise.';
     // Themes required (min 1)
-    if (selectedThemes.length === 0) return 'Selectionnez au moins un theme.';
+    if (selectedThemes.length === 0) return 'Sélectionnez au moins un thème.';
     // Amount not required for org_update (impact posts)
     if (!isOrgUpdate && (!amount.trim() || isNaN(Number(amount)) || Number(amount) <= 0))
       return 'Montant invalide.';
@@ -206,18 +206,18 @@ export function CreateRequestScreen({navigation}: Props) {
 
     // Theme-specific validation
     if (primaryTheme === 'infrastructure') {
-      if (!infrastructureType) return 'Selectionnez le type d\'infrastructure.';
+      if (!infrastructureType) return 'Sélectionnez le type d\'infrastructure.';
       if (!projectLocation.trim()) return 'La localisation du projet est requise pour les infrastructures.';
     }
     if (primaryTheme === 'environnement') {
-      if (!ecologyActionType) return 'Selectionnez le type d\'action ecologique.';
-      if (!projectLocation.trim()) return 'La localisation du projet est requise pour les actions ecologiques.';
+      if (!ecologyActionType) return 'Sélectionnez le type d\'action écologique.';
+      if (!projectLocation.trim()) return 'La localisation du projet est requise pour les actions écologiques.';
     }
     if (primaryTheme === 'sante') {
-      if (!medicalNeedType) return 'Selectionnez le type de besoin medical.';
+      if (!medicalNeedType) return 'Sélectionnez le type de besoin médical.';
     }
     if (primaryTheme === 'education') {
-      if (!educationLevel) return 'Selectionnez le niveau d\'education.';
+      if (!educationLevel) return 'Sélectionnez le niveau d\'éducation.';
     }
 
     // Beneficiary validation only if section is shown
@@ -275,7 +275,7 @@ export function CreateRequestScreen({navigation}: Props) {
           data: {
             ecologyActionType,
             projectLocation: projectLocation.trim(),
-            targetQuantity: targetQuantity.trim() || undefined,
+            ...(targetQuantity.trim() ? {targetQuantity: targetQuantity.trim()} : {}),
           },
         };
       } else if (primaryTheme === 'sante' && medicalNeedType) {
@@ -283,7 +283,7 @@ export function CreateRequestScreen({navigation}: Props) {
           themeType: 'sante',
           data: {
             medicalNeedType,
-            deadlineDate: deadlineDate.trim() || undefined,
+            ...(deadlineDate.trim() ? {deadlineDate: deadlineDate.trim()} : {}),
           },
         };
       } else if (primaryTheme === 'education' && educationLevel) {
@@ -291,7 +291,7 @@ export function CreateRequestScreen({navigation}: Props) {
           themeType: 'education',
           data: {
             educationLevel,
-            beneficiariesCount: beneficiariesCount.trim() ? Number(beneficiariesCount) : undefined,
+            ...(beneficiariesCount.trim() ? {beneficiariesCount: Number(beneficiariesCount)} : {}),
           },
         };
       }
@@ -300,13 +300,13 @@ export function CreateRequestScreen({navigation}: Props) {
       const hasBeneficiaryData = showBeneficiarySection && (benFirstName.trim() || benLastName.trim());
       const beneficiary = hasBeneficiaryData
         ? {
-            firstName: benFirstName.trim() || 'Non specifie',
-            lastName: benLastName.trim() || 'Non specifie',
-            age: benAge.trim() ? Number(benAge) : undefined,
+            firstName: benFirstName.trim() || 'Non spécifié',
+            lastName: benLastName.trim() || 'Non spécifié',
+            ...(benAge.trim() ? {age: Number(benAge)} : {}),
             country: benCountry.trim() || country.trim(), // Fallback to request country
-            city: benCity.trim() || undefined,
-            email: benShowContact && benEmail.trim() ? benEmail.trim() : undefined,
-            phone: benShowContact && benPhone.trim() ? benPhone.trim() : undefined,
+            ...(benCity.trim() ? {city: benCity.trim()} : {}),
+            ...(benShowContact && benEmail.trim() ? {email: benEmail.trim()} : {}),
+            ...(benShowContact && benPhone.trim() ? {phone: benPhone.trim()} : {}),
             showContactPublicly: benShowContact,
           }
         : {
@@ -338,12 +338,12 @@ export function CreateRequestScreen({navigation}: Props) {
       await requestService.create(input);
 
       const successMsg = isOrgUpdate
-        ? 'Votre publication a ete enregistree.'
+        ? 'Votre publication a été enregistrée.'
         : isOrg
-        ? 'Votre campagne a ete enregistree.'
-        : 'Votre demande a ete enregistree.';
+        ? 'Votre campagne a été enregistrée.'
+        : 'Votre demande a été enregistrée.';
 
-      Alert.alert('Publication creee', successMsg, [
+      Alert.alert('Publication créée', successMsg, [
         {text: 'OK', onPress: () => navigation.replace('CreateMenu')},
       ]);
     } catch (e: any) {
@@ -386,15 +386,15 @@ export function CreateRequestScreen({navigation}: Props) {
           {/* Titre */}
           <Input
             label="Titre de la demande *"
-            placeholder="Ex: Aide pour frais medicaux"
+            placeholder="Ex: Aide pour frais médicaux"
             value={title}
             onChangeText={setTitle}
           />
 
           {/* Themes (required, min 1) */}
-          <Text style={styles.label}>Themes * (selectionnez au moins 1)</Text>
+          <Text style={styles.label}>Thèmes * (sélectionnez au moins 1)</Text>
           <Text style={[typography.caption, {marginBottom: spacing.sm, color: colors.mutedText}]}>
-            Le premier theme selectionne sera le theme principal.
+            Le premier thème sélectionné sera le thème principal.
           </Text>
           <View style={styles.categoryRow}>
             {THEMES.map(theme => {
@@ -433,7 +433,7 @@ export function CreateRequestScreen({navigation}: Props) {
           {/* Description */}
           <Input
             label="Description *"
-            placeholder="Decrivez la situation et les besoins..."
+            placeholder="Décrivez la situation et les besoins..."
             value={description}
             onChangeText={setDescription}
             multiline
@@ -445,7 +445,7 @@ export function CreateRequestScreen({navigation}: Props) {
           {/* Montant - hidden for org_update */}
           {!(userProfile && isOrganizationProfile(userProfile) && postType === 'org_update') && (
             <Input
-              label="Montant demande (EUR) *"
+              label="Montant demandé (EUR) *"
               placeholder="500"
               value={amount}
               onChangeText={setAmount}
@@ -477,9 +477,9 @@ export function CreateRequestScreen({navigation}: Props) {
           {primaryTheme && ['infrastructure', 'environnement', 'sante', 'education'].includes(primaryTheme) && (
             <>
               <View style={styles.sectionDivider} />
-              <Text style={styles.sectionHeader}>Details du projet</Text>
+              <Text style={styles.sectionHeader}>Détails du projet</Text>
               <Text style={[typography.caption, {marginBottom: spacing.md, color: colors.mutedText}]}>
-                Champs specifiques au theme "{THEMES.find(t => t.id === primaryTheme)?.label}".
+                Champs spécifiques au thème "{THEMES.find(t => t.id === primaryTheme)?.label}".
               </Text>
 
               {/* Infrastructure fields */}
@@ -508,7 +508,7 @@ export function CreateRequestScreen({navigation}: Props) {
 
                   <Input
                     label="Localisation du projet *"
-                    placeholder="Adresse ou lieu precis"
+                    placeholder="Adresse ou lieu précis"
                     value={projectLocation}
                     onChangeText={setProjectLocation}
                   />
@@ -537,7 +537,7 @@ export function CreateRequestScreen({navigation}: Props) {
                   <View style={styles.tipBox}>
                     <MaterialCommunityIcons name="lightbulb-outline" size={18} color={colors.accent} />
                     <Text style={styles.tipText}>
-                      Un devis PDF est recommande pour les projets de construction.
+                      Un devis PDF est recommandé pour les projets de construction.
                     </Text>
                   </View>
                 </>
@@ -569,14 +569,14 @@ export function CreateRequestScreen({navigation}: Props) {
 
                   <Input
                     label="Localisation du projet *"
-                    placeholder="Adresse ou lieu precis"
+                    placeholder="Adresse ou lieu précis"
                     value={projectLocation}
                     onChangeText={setProjectLocation}
                   />
 
                   <Input
-                    label="Quantite cible (optionnel)"
-                    placeholder="Ex: 500 arbres, 100kg dechets"
+                    label="Quantité cible (optionnel)"
+                    placeholder="Ex: 500 arbres, 100kg déchets"
                     value={targetQuantity}
                     onChangeText={setTargetQuantity}
                   />
@@ -586,7 +586,7 @@ export function CreateRequestScreen({navigation}: Props) {
               {/* Health fields */}
               {primaryTheme === 'sante' && (
                 <>
-                  <Text style={styles.label}>Type de besoin medical *</Text>
+                  <Text style={styles.label}>Type de besoin médical *</Text>
                   <View style={styles.categoryRow}>
                     {(Object.keys(MEDICAL_NEED_LABELS) as MedicalNeedType[]).map(type => (
                       <TouchableOpacity
@@ -619,7 +619,7 @@ export function CreateRequestScreen({navigation}: Props) {
               {/* Education fields */}
               {primaryTheme === 'education' && (
                 <>
-                  <Text style={styles.label}>Niveau d'education *</Text>
+                  <Text style={styles.label}>Niveau d'éducation *</Text>
                   <View style={styles.categoryRow}>
                     {(Object.keys(EDUCATION_LEVEL_LABELS) as EducationLevel[]).map(level => (
                       <TouchableOpacity
@@ -641,7 +641,7 @@ export function CreateRequestScreen({navigation}: Props) {
                   </View>
 
                   <Input
-                    label="Nombre de beneficiaires (optionnel)"
+                    label="Nombre de bénéficiaires (optionnel)"
                     placeholder="Ex: 25"
                     value={beneficiariesCount}
                     onChangeText={setBeneficiariesCount}
@@ -719,7 +719,7 @@ export function CreateRequestScreen({navigation}: Props) {
                       styles.postTypeDesc,
                       postType === 'org_update' && styles.postTypeDescActive,
                     ]}>
-                    Actualite ou impact (sans don)
+                    Actualité ou impact (sans don)
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -732,7 +732,7 @@ export function CreateRequestScreen({navigation}: Props) {
               <View style={styles.switchLabel}>
                 <Text style={typography.bodySmall}>Demande urgente</Text>
                 <Text style={typography.caption}>
-                  Signalee comme prioritaire aux donateurs
+                  Signalée comme prioritaire aux donateurs
                 </Text>
               </View>
               <Switch
@@ -760,7 +760,7 @@ export function CreateRequestScreen({navigation}: Props) {
           {showBeneficiarySection && (
             <>
               <View style={styles.sectionDivider} />
-              <Text style={styles.sectionHeader}>Personne concernee (beneficiaire)</Text>
+              <Text style={styles.sectionHeader}>Personne concernée (bénéficiaire)</Text>
               <Text style={[typography.caption, {marginBottom: spacing.md}]}>
                 La personne qui recevra l'aide. Ces informations sont optionnelles.
               </Text>
@@ -768,8 +768,8 @@ export function CreateRequestScreen({navigation}: Props) {
               <View style={styles.row}>
                 <View style={styles.halfInput}>
                   <Input
-                    label="Prenom"
-                    placeholder="Prenom"
+                    label="Prénom"
+                    placeholder="Prénom"
                     value={benFirstName}
                     onChangeText={setBenFirstName}
                   />
@@ -785,7 +785,7 @@ export function CreateRequestScreen({navigation}: Props) {
               </View>
 
               <Input
-                label="Age"
+                label="Âge"
                 placeholder="25"
                 value={benAge}
                 onChangeText={setBenAge}
@@ -815,9 +815,9 @@ export function CreateRequestScreen({navigation}: Props) {
               <View style={styles.switchRow}>
                 <View style={styles.switchLabel}>
                   <Text style={typography.bodySmall}>
-                    Afficher les contacts du beneficiaire sur la demande
+                    Afficher les contacts du bénéficiaire sur la demande
                   </Text>
-                  <Text style={typography.caption}>Par defaut: non visible</Text>
+                  <Text style={typography.caption}>Par défaut: non visible</Text>
                 </View>
                 <Switch
                   value={benShowContact}
@@ -830,7 +830,7 @@ export function CreateRequestScreen({navigation}: Props) {
               {benShowContact && (
                 <>
                   <Input
-                    label="Email du beneficiaire"
+                    label="Email du bénéficiaire"
                     placeholder="email@exemple.com"
                     value={benEmail}
                     onChangeText={setBenEmail}
@@ -838,7 +838,7 @@ export function CreateRequestScreen({navigation}: Props) {
                     autoCapitalize="none"
                   />
                   <Input
-                    label="Telephone du beneficiaire"
+                    label="Téléphone du bénéficiaire"
                     placeholder="+33 6 12 34 56 78"
                     value={benPhone}
                     onChangeText={setBenPhone}
@@ -856,7 +856,7 @@ export function CreateRequestScreen({navigation}: Props) {
               <View style={styles.collectiveNotice}>
                 <MaterialCommunityIcons name="account-group" size={20} color={colors.accent} />
                 <Text style={styles.collectiveNoticeText}>
-                  Projet collectif : pas de beneficiaire individuel requis pour les themes selectionnes.
+                  Projet collectif : pas de bénéficiaire individuel requis pour les thèmes sélectionnés.
                 </Text>
               </View>
             </>

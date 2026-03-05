@@ -141,7 +141,11 @@ export function DonateScreen({route, navigation}: Props) {
         throw new Error(paymentError.message);
       }
 
-      // 4. Payment succeeded — record donation in Firebase
+      // 4. Payment succeeded — calculate net amount after 2% platform fee
+      const platformFeeCents = Math.round(amountCents * 0.02);
+      const netAmountCents = amountCents - platformFeeCents;
+
+      // Record full donation amount in Firebase
       await donationService.createDonation({
         type: isTreasury ? 'treasury' : isOrganization ? 'organization' : 'request',
         requestId: isRequest ? requestId : undefined,
@@ -150,41 +154,41 @@ export function DonateScreen({route, navigation}: Props) {
         message: message.trim() || undefined,
       });
 
-      // 5. Update target based on type
+      // 5. Update target with net amount (after 2% fee)
       if (isTreasury) {
         const treasuryRef = doc(db, 'treasury', 'global');
         const treasuryDoc = await getDoc(treasuryRef);
 
         if (treasuryDoc.exists()) {
           await updateDoc(treasuryRef, {
-            totalAmountCents: increment(amountCents),
+            totalAmountCents: increment(netAmountCents),
             donationCount: increment(1),
             lastDonationAt: new Date(),
           });
         } else {
           await setDoc(treasuryRef, {
-            totalAmountCents: amountCents,
+            totalAmountCents: netAmountCents,
             donationCount: 1,
             lastDonationAt: new Date(),
             createdAt: new Date(),
           });
         }
       } else if (isRequest && requestId) {
-        await requestService.addDonation(requestId, amountCents);
+        await requestService.addDonation(requestId, netAmountCents);
       } else if (isOrganization && organizationId) {
-        await organizationService.addDonation(organizationId, amountCents);
+        await organizationService.addDonation(organizationId, netAmountCents);
       }
 
       let successMessage = '';
       if (isTreasury) {
-        successMessage = `Merci ! Votre don de ${formatAmount(amountNum)} au tresor a bien ete enregistre.`;
+        successMessage = `Votre don de ${formatAmount(amountNum)} au trésor ZaKaT a bien été effectué.`;
       } else if (isOrganization) {
-        successMessage = `Merci ! Votre don de ${formatAmount(amountNum)} a ${organizationName || organization?.name || 'l\'association'} a bien ete enregistre.`;
+        successMessage = `Votre don de ${formatAmount(amountNum)} à ${organizationName || organization?.name || 'l\'association'} a bien été effectué.`;
       } else {
-        successMessage = `Merci ! Votre don de ${formatAmount(amountNum)} a bien ete enregistre.`;
+        successMessage = `Votre don de ${formatAmount(amountNum)} a bien été effectué.`;
       }
 
-      Alert.alert('Merci !', successMessage, [{text: 'OK', onPress: () => navigation.goBack()}]);
+      Alert.alert('Don effectué !', successMessage, [{text: 'OK', onPress: () => navigation.goBack()}]);
     } catch (e: any) {
       Alert.alert('Erreur', e.message || 'Une erreur est survenue');
     } finally {
@@ -222,10 +226,10 @@ export function DonateScreen({route, navigation}: Props) {
               <View style={styles.infoIconContainer}>
                 <MaterialCommunityIcons name="treasure-chest" size={48} color={colors.primary} />
               </View>
-              <Text style={styles.infoTitle}>Tresor ZaKaT</Text>
+              <Text style={styles.infoTitle}>Trésor ZaKaT</Text>
               <Text style={styles.infoText}>
-                Votre don au tresor permet d'aider plusieurs personnes et projets selon l'urgence.
-                Les fonds sont redistribues equitablement aux demandes les plus pressantes.
+                Votre don au trésor permet d'aider plusieurs personnes et projets selon l'urgence.
+                Les fonds sont redistribués équitablement aux demandes les plus pressantes.
               </Text>
             </View>
           )}
@@ -250,7 +254,7 @@ export function DonateScreen({route, navigation}: Props) {
                     <Text style={styles.orgStatValue}>
                       {formatAmount((organization.walletBalanceCents || 0) / 100)}
                     </Text>
-                    <Text style={styles.orgStatLabel}>collectes</Text>
+                    <Text style={styles.orgStatLabel}>collectés</Text>
                   </View>
                   <View style={styles.orgStatDivider} />
                   <View style={styles.orgStatItem}>
@@ -305,7 +309,7 @@ export function DonateScreen({route, navigation}: Props) {
                   />
                 </View>
                 <Text style={styles.progressText}>
-                  {formatAmount((request.receivedAmountCents || 0) / 100)} collectes
+                  {formatAmount((request.receivedAmountCents || 0) / 100)} collectés
                   {request.donorCount > 0 && ` - ${request.donorCount} donateur${request.donorCount > 1 ? 's' : ''}`}
                 </Text>
               </View>
@@ -371,7 +375,12 @@ export function DonateScreen({route, navigation}: Props) {
           {/* Summary */}
           {amountNum > 0 && (
             <View style={styles.summary}>
-              <Text style={styles.summaryLabel}>Votre don</Text>
+              <View>
+                <Text style={styles.summaryLabel}>Votre don</Text>
+                <Text style={styles.feeText}>
+                  Dont {formatAmount(Math.round(amountNum * 0.02))} de frais de service (2 %)
+                </Text>
+              </View>
               <Text style={styles.summaryAmount}>{formatAmount(amountNum)}</Text>
             </View>
           )}
@@ -394,11 +403,10 @@ export function DonateScreen({route, navigation}: Props) {
             )}
           </TouchableOpacity>
 
-          {/* Stripe test notice */}
           <View style={styles.notice}>
             <MaterialCommunityIcons name="shield-check-outline" size={16} color={colors.mutedText} />
             <Text style={styles.noticeText}>
-              Paiement securise par Stripe (mode test)
+              Paiement sécurisé par Stripe
             </Text>
           </View>
         </ScrollView>
@@ -641,6 +649,12 @@ const styles = StyleSheet.create({
     ...typography.body,
     color: colors.primary,
     fontWeight: '600',
+  },
+  feeText: {
+    ...typography.caption,
+    color: colors.primary,
+    opacity: 0.7,
+    marginTop: 2,
   },
   summaryAmount: {
     fontSize: 24,

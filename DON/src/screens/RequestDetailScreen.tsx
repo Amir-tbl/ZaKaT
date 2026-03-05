@@ -134,7 +134,7 @@ export function RequestDetailScreen({route, navigation}: Props) {
   function handleDelete() {
     Alert.alert(
       'Supprimer la demande',
-      'Cette action est irreversible. Confirmer la suppression ?',
+      'Cette action est irréversible. Confirmer la suppression ?',
       [
         {text: 'Annuler', style: 'cancel'},
         {
@@ -228,7 +228,7 @@ export function RequestDetailScreen({route, navigation}: Props) {
           <MaterialCommunityIcons name="arrow-left" size={24} color={colors.text} />
         </TouchableOpacity>
         <Text style={typography.h3} numberOfLines={1}>
-          Detail
+          Détail
         </Text>
         <View style={styles.topBarActions}>
           {currentUserId && request.authorUserId !== currentUserId && (
@@ -332,10 +332,10 @@ export function RequestDetailScreen({route, navigation}: Props) {
                 request.status === 'pending'
                   ? 'En attente'
                   : request.status === 'verified'
-                  ? 'Verifiee'
+                  ? 'Vérifiée'
                   : request.status === 'rejected'
-                  ? 'Refusee'
-                  : 'Fermee'
+                  ? 'Refusée'
+                  : 'Fermée'
               }
               variant={
                 request.status === 'pending'
@@ -408,7 +408,7 @@ export function RequestDetailScreen({route, navigation}: Props) {
                 color={colors.accent}
               />
               <Text style={styles.orgAuthorBadgeText}>
-                Publie par une association
+                Publié par une association
               </Text>
             </View>
           )}
@@ -453,14 +453,14 @@ export function RequestDetailScreen({route, navigation}: Props) {
                 size={18}
                 color={colors.success}
               />
-              <Text style={styles.proofText}>Justificatif recu</Text>
+              <Text style={styles.proofText}>Justificatif reçu</Text>
             </View>
           )}
         </View>
 
         {/* ===== AUTEUR ===== */}
         <View style={styles.personSection}>
-          <Text style={styles.sectionTitle}>Publie par</Text>
+          <Text style={styles.sectionTitle}>Publié par</Text>
           <View style={styles.infoRow}>
             <MaterialCommunityIcons name="account-edit" size={20} color={colors.primary} />
             <Text style={typography.body}>{request.authorDisplayName}</Text>
@@ -471,7 +471,7 @@ export function RequestDetailScreen({route, navigation}: Props) {
         {/* Only show beneficiary section for person-oriented requests (not collective projects) */}
         {benFullName !== 'Collectif Projet' && (
           <View style={styles.personSection}>
-            <Text style={styles.sectionTitle}>Personne concernee</Text>
+            <Text style={styles.sectionTitle}>Personne concernée</Text>
 
             <View style={styles.infoRow}>
               <MaterialCommunityIcons name="account" size={20} color={colors.primary} />

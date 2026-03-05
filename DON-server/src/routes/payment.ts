@@ -20,11 +20,18 @@ router.post('/payment-intent', validateAmount, async (req: Request, res: Respons
       {apiVersion: '2024-04-10'},
     );
 
+    // Calculate 2% platform fee
+    const platformFeeCents = Math.round(amountCents * 0.02);
+
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amountCents,
       currency: 'eur',
       customer: customer.id,
       automatic_payment_methods: {enabled: true},
+      metadata: {
+        platform_fee_cents: platformFeeCents.toString(),
+        net_amount_cents: (amountCents - platformFeeCents).toString(),
+      },
     });
 
     res.json({

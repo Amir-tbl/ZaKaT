@@ -43,7 +43,7 @@ export function ResetPasswordScreen() {
     }
 
     if (newPassword.length < 6) {
-      setError('Le mot de passe doit contenir au moins 6 caracteres');
+      setError('Le mot de passe doit contenir au moins 6 caractères');
       return;
     }
 
@@ -60,9 +60,9 @@ export function ResetPasswordScreen() {
     } catch (err: any) {
       const message = err?.message || '';
       if (message.includes('expire')) {
-        setError('Le code a expire. Veuillez recommencer.');
+        setError('Le code a expiré. Veuillez recommencer.');
       } else {
-        setError('Une erreur est survenue. Veuillez reessayer.');
+        setError('Une erreur est survenue. Veuillez réessayer.');
       }
     } finally {
       setIsLoading(false);
@@ -85,13 +85,13 @@ export function ResetPasswordScreen() {
           <View style={styles.successIcon}>
             <MaterialCommunityIcons name="check-circle" size={64} color={colors.success} />
           </View>
-          <Text style={styles.successTitle}>Mot de passe modifie !</Text>
+          <Text style={styles.successTitle}>Mot de passe modifié !</Text>
           <Text style={styles.successSubtitle}>
-            Votre mot de passe a ete reinitialise avec succes.
+            Votre mot de passe a été réinitialisé avec succès.
             Vous pouvez maintenant vous connecter.
           </Text>
           <TouchableOpacity style={styles.button} onPress={goToLogin}>
-            <Text style={styles.buttonText}>Retour a la connexion</Text>
+            <Text style={styles.buttonText}>Retour à la connexion</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -138,7 +138,7 @@ export function ResetPasswordScreen() {
                 <MaterialCommunityIcons name="lock-outline" size={20} color={colors.mutedText} />
                 <TextInput
                   style={styles.input}
-                  placeholder="Minimum 6 caracteres"
+                  placeholder="Minimum 6 caractères"
                   placeholderTextColor={colors.mutedText}
                   value={newPassword}
                   onChangeText={setNewPassword}
@@ -180,7 +180,7 @@ export function ResetPasswordScreen() {
                 <Text style={[
                   styles.ruleText,
                   newPassword.length >= 6 && styles.ruleTextValid,
-                ]}>Au moins 6 caracteres</Text>
+                ]}>Au moins 6 caractères</Text>
               </View>
               <View style={styles.ruleRow}>
                 <MaterialCommunityIcons

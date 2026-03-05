@@ -61,7 +61,7 @@ export function CreatePostScreen({navigation}: Props) {
 
   async function pickPhotos() {
     if (totalFiles >= MAX_FILES) {
-      Alert.alert('Limite', `Maximum ${MAX_FILES} fichiers autorises.`);
+      Alert.alert('Limite', `Maximum ${MAX_FILES} fichiers autorisés.`);
       return;
     }
 
@@ -87,7 +87,7 @@ export function CreatePostScreen({navigation}: Props) {
 
   async function pickVideos() {
     if (totalFiles >= MAX_FILES) {
-      Alert.alert('Limite', `Maximum ${MAX_FILES} fichiers autorises.`);
+      Alert.alert('Limite', `Maximum ${MAX_FILES} fichiers autorisés.`);
       return;
     }
 
@@ -115,7 +115,7 @@ export function CreatePostScreen({navigation}: Props) {
 
   async function pickDocument() {
     if (totalFiles >= MAX_FILES) {
-      Alert.alert('Limite', `Maximum ${MAX_FILES} fichiers autorises.`);
+      Alert.alert('Limite', `Maximum ${MAX_FILES} fichiers autorisés.`);
       return;
     }
 
@@ -143,7 +143,7 @@ export function CreatePostScreen({navigation}: Props) {
 
   function validate(): string | null {
     if (!description.trim()) return 'La description est requise.';
-    if (selectedThemes.length === 0) return 'Selectionnez au moins un theme.';
+    if (selectedThemes.length === 0) return 'Sélectionnez au moins un thème.';
     if (files.length === 0) return 'Ajoutez au moins une photo ou un document.';
     return null;
   }
@@ -156,7 +156,7 @@ export function CreatePostScreen({navigation}: Props) {
     }
 
     if (!userProfile) {
-      Alert.alert('Erreur', 'Vous devez etre connecte pour publier.');
+      Alert.alert('Erreur', 'Vous devez être connecté pour publier.');
       return;
     }
 
@@ -172,7 +172,7 @@ export function CreatePostScreen({navigation}: Props) {
         files,
       });
 
-      Alert.alert('Publication creee', 'Votre publication a ete enregistree et sera visible apres validation.', [
+      Alert.alert('Publication créée', 'Votre publication a été enregistrée et sera visible après validation.', [
         {text: 'OK', onPress: () => navigation.replace('CreateMenu')},
       ]);
     } catch (e: any) {
@@ -213,7 +213,7 @@ export function CreatePostScreen({navigation}: Props) {
           <View style={styles.infoNotice}>
             <MaterialCommunityIcons name="information-outline" size={20} color={colors.primary} />
             <Text style={styles.infoNoticeText}>
-              Les publications sont des actualites ou partages d'impact. Elles n'ont pas de bouton "Faire un don".
+              Les publications sont des actualités ou partages d'impact. Elles n'ont pas de bouton "Faire un don".
             </Text>
           </View>
 
@@ -246,7 +246,7 @@ export function CreatePostScreen({navigation}: Props) {
           <Text style={styles.sectionHeader}>Contenu</Text>
           <Input
             label="Description *"
-            placeholder="Partagez une actualite, un impact realise, une nouvelle..."
+            placeholder="Partagez une actualité, un impact réalisé, une nouvelle..."
             value={description}
             onChangeText={setDescription}
             multiline
@@ -256,9 +256,9 @@ export function CreatePostScreen({navigation}: Props) {
           />
 
           {/* Themes */}
-          <Text style={styles.label}>Themes * (selectionnez au moins 1)</Text>
+          <Text style={styles.label}>Thèmes * (sélectionnez au moins 1)</Text>
           <Text style={[typography.caption, {marginBottom: spacing.sm, color: colors.mutedText}]}>
-            Le premier theme selectionne sera le theme principal.
+            Le premier thème sélectionné sera le thème principal.
           </Text>
           <View style={styles.themeRow}>
             {THEMES.map(theme => {
@@ -318,9 +318,9 @@ export function CreatePostScreen({navigation}: Props) {
 
           {/* Files */}
           <View style={styles.sectionDivider} />
-          <Text style={styles.sectionHeader}>Medias et documents</Text>
+          <Text style={styles.sectionHeader}>Médias et documents</Text>
           <Text style={[typography.caption, {marginBottom: spacing.sm}]}>
-            {totalFiles}/{MAX_FILES} fichiers (videos: 60s max)
+            {totalFiles}/{MAX_FILES} fichiers (vidéos: 60s max)
           </Text>
 
           <View style={styles.fileButtons}>
@@ -330,7 +330,7 @@ export function CreatePostScreen({navigation}: Props) {
             </TouchableOpacity>
             <TouchableOpacity style={styles.fileBtn} onPress={pickVideos}>
               <MaterialCommunityIcons name="video" size={22} color={colors.accent} />
-              <Text style={styles.fileBtnText}>Videos</Text>
+              <Text style={styles.fileBtnText}>Vidéos</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.fileBtn} onPress={pickDocument}>
               <MaterialCommunityIcons name="file-pdf-box" size={22} color={colors.error} />

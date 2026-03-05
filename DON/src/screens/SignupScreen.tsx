@@ -144,7 +144,7 @@ export function SignupScreen() {
     }
     // Password strength validation
     if (password.length < 6) {
-      setError('Le mot de passe doit contenir au moins 6 caracteres');
+      setError('Le mot de passe doit contenir au moins 6 caractères');
       return;
     }
     if (!/[A-Z]/.test(password)) {
@@ -156,7 +156,7 @@ export function SignupScreen() {
       return;
     }
     if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
-      setError('Le mot de passe doit contenir au moins un caractere special (!@#$%^&*...)');
+      setError('Le mot de passe doit contenir au moins un caractère spécial (!@#$%^&*...)');
       return;
     }
     if (password !== confirmPassword) {
@@ -167,7 +167,7 @@ export function SignupScreen() {
     if (accountType === 'individual') {
       // Individual validation
       if (!firstName.trim()) {
-        setError('Veuillez entrer votre prenom');
+        setError('Veuillez entrer votre prénom');
         return;
       }
       if (!lastName.trim()) {
@@ -193,7 +193,7 @@ export function SignupScreen() {
         return;
       }
       if (!legalRepName.trim()) {
-        setError('Veuillez entrer le nom du representant legal');
+        setError('Veuillez entrer le nom du représentant légal');
         return;
       }
       if (!orgEmail.trim()) {
@@ -201,7 +201,7 @@ export function SignupScreen() {
         return;
       }
       if (!orgPhone.trim()) {
-        setError('Veuillez entrer le telephone');
+        setError('Veuillez entrer le téléphone');
         return;
       }
 
@@ -221,14 +221,14 @@ export function SignupScreen() {
       if (foundedYear.trim()) {
         const year = parseInt(foundedYear, 10);
         if (isNaN(year) || year < 1800 || year > new Date().getFullYear()) {
-          setError('Annee de creation invalide');
+          setError('Année de création invalide');
           return;
         }
       }
 
       // Operating countries validation (minimum 1 required)
       if (operatingCountries.length === 0) {
-        setError('Veuillez selectionner au moins 1 pays d\'intervention');
+        setError('Veuillez sélectionner au moins 1 pays d\'intervention');
         return;
       }
     }
@@ -312,7 +312,7 @@ export function SignupScreen() {
             <View style={styles.logoContainer}>
               <MaterialCommunityIcons name="account-plus" size={48} color={colors.primary} />
             </View>
-            <Text style={styles.title}>Creer un compte</Text>
+            <Text style={styles.title}>Créer un compte</Text>
             <Text style={styles.subtitle}>Choisissez votre type de compte</Text>
           </View>
 
@@ -326,7 +326,7 @@ export function SignupScreen() {
               </View>
               <Text style={styles.accountTypeTitle}>Particulier</Text>
               <Text style={styles.accountTypeDesc}>
-                Creer des demandes d'aide a titre personnel
+                Créer des demandes d'aide à titre personnel
               </Text>
             </TouchableOpacity>
 
@@ -345,7 +345,7 @@ export function SignupScreen() {
           </View>
 
           <View style={styles.footer}>
-            <Text style={styles.footerText}>Deja un compte ?</Text>
+            <Text style={styles.footerText}>Déjà un compte ?</Text>
             <TouchableOpacity onPress={() => navigation.navigate('Login')}>
               <Text style={styles.linkText}>Se connecter</Text>
             </TouchableOpacity>
@@ -399,7 +399,7 @@ export function SignupScreen() {
 
               {/* Title selector */}
               <View style={styles.inputContainer}>
-                <Text style={styles.label}>Civilite</Text>
+                <Text style={styles.label}>Civilité</Text>
                 <View style={styles.titleSelector}>
                   {TITLE_OPTIONS.map((option) => (
                     <TouchableOpacity
@@ -424,7 +424,7 @@ export function SignupScreen() {
               {/* First name / Last name row */}
               <View style={styles.row}>
                 <View style={[styles.inputContainer, styles.flex1, {marginRight: spacing.sm}]}>
-                  <Text style={styles.label}>Prenom *</Text>
+                  <Text style={styles.label}>Prénom *</Text>
                   <View style={styles.inputWrapper}>
                     <TextInput
                       style={styles.inputInner}
@@ -454,7 +454,7 @@ export function SignupScreen() {
 
               {/* Phone */}
               <View style={styles.inputContainer}>
-                <Text style={styles.label}>Telephone</Text>
+                <Text style={styles.label}>Téléphone</Text>
                 <View style={styles.inputWrapper}>
                   <MaterialCommunityIcons name="phone-outline" size={20} color={colors.mutedText} />
                   <TextInput
@@ -569,7 +569,7 @@ export function SignupScreen() {
                   <MaterialCommunityIcons name="text" size={20} color={colors.mutedText} style={{marginTop: 2}} />
                   <TextInput
                     style={[styles.input, {minHeight: 80, textAlignVertical: 'top'}]}
-                    placeholder="Decrivez votre association en quelques phrases..."
+                    placeholder="Décrivez votre association en quelques phrases..."
                     placeholderTextColor={colors.mutedText}
                     value={orgDescription}
                     onChangeText={setOrgDescription}
@@ -581,7 +581,7 @@ export function SignupScreen() {
 
               {/* Legal rep name */}
               <View style={styles.inputContainer}>
-                <Text style={styles.label}>Nom du representant legal *</Text>
+                <Text style={styles.label}>Nom du représentant légal *</Text>
                 <View style={styles.inputWrapper}>
                   <MaterialCommunityIcons name="account-tie" size={20} color={colors.mutedText} />
                   <TextInput
@@ -613,7 +613,7 @@ export function SignupScreen() {
 
               {/* Phone */}
               <View style={styles.inputContainer}>
-                <Text style={styles.label}>Telephone *</Text>
+                <Text style={styles.label}>Téléphone *</Text>
                 <View style={styles.inputWrapper}>
                   <MaterialCommunityIcons name="phone-outline" size={20} color={colors.mutedText} />
                   <TextInput
@@ -652,7 +652,7 @@ export function SignupScreen() {
 
               {/* RNA */}
               <View style={styles.inputContainer}>
-                <Text style={styles.label}>RNA (Numero RNA)</Text>
+                <Text style={styles.label}>RNA (Numéro RNA)</Text>
                 <View style={styles.inputWrapper}>
                   <MaterialCommunityIcons name="card-account-details-outline" size={20} color={colors.mutedText} />
                   <TextInput
@@ -684,7 +684,7 @@ export function SignupScreen() {
 
               {/* Founded year */}
               <View style={styles.inputContainer}>
-                <Text style={styles.label}>Annee de creation</Text>
+                <Text style={styles.label}>Année de création</Text>
                 <View style={styles.inputWrapper}>
                   <MaterialCommunityIcons name="calendar" size={20} color={colors.mutedText} />
                   <TextInput
@@ -718,7 +718,7 @@ export function SignupScreen() {
               </View>
 
               {/* Social networks */}
-              <Text style={[styles.label, {marginBottom: spacing.sm}]}>Reseaux sociaux</Text>
+              <Text style={[styles.label, {marginBottom: spacing.sm}]}>Réseaux sociaux</Text>
 
               <View style={styles.inputContainer}>
                 <View style={styles.inputWrapper}>
@@ -781,13 +781,13 @@ export function SignupScreen() {
                 label="Pays d'intervention *"
                 selectedCodes={operatingCountries}
                 onSelectionChange={setOperatingCountries}
-                placeholder="Selectionner les pays"
+                placeholder="Sélectionner les pays"
                 minSelection={1}
               />
 
               {/* Themes */}
               <View style={styles.inputContainer}>
-                <Text style={styles.label}>Themes principaux</Text>
+                <Text style={styles.label}>Thèmes principaux</Text>
                 <View style={styles.chipsContainer}>
                   {THEMES.map(theme => {
                     const isSelected = selectedThemes.includes(theme.id);
@@ -817,7 +817,7 @@ export function SignupScreen() {
               <View style={styles.orgNotice}>
                 <MaterialCommunityIcons name="information-outline" size={18} color={colors.accent} />
                 <Text style={styles.orgNoticeText}>
-                  Votre association sera en attente de verification par notre equipe avant d'apparaitre dans les partenaires.
+                  Votre association sera en attente de vérification par notre équipe avant d'apparaître dans les partenaires.
                 </Text>
               </View>
             </>
@@ -865,7 +865,7 @@ export function SignupScreen() {
                 </TouchableOpacity>
               </View>
               <Text style={styles.passwordHint}>
-                Min. 6 caracteres, 1 majuscule, 1 chiffre, 1 caractere special
+                Min. 6 caractères, 1 majuscule, 1 chiffre, 1 caractère spécial
               </Text>
             </View>
 
@@ -892,7 +892,7 @@ export function SignupScreen() {
                 <ActivityIndicator color={colors.surface} />
               ) : (
                 <Text style={styles.primaryButtonText}>
-                  {accountType === 'individual' ? 'Creer mon compte' : 'Soumettre l\'inscription'}
+                  {accountType === 'individual' ? 'Créer mon compte' : 'Soumettre l\'inscription'}
                 </Text>
               )}
             </TouchableOpacity>
@@ -927,7 +927,7 @@ export function SignupScreen() {
 
           {/* Footer */}
           <View style={styles.footer}>
-            <Text style={styles.footerText}>Deja un compte ?</Text>
+            <Text style={styles.footerText}>Déjà un compte ?</Text>
             <TouchableOpacity onPress={() => navigation.navigate('Login')}>
               <Text style={styles.linkText}>Se connecter</Text>
             </TouchableOpacity>

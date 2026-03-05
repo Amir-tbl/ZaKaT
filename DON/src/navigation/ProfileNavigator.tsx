@@ -18,6 +18,7 @@ import {OrganizationProfileScreen} from '../screens/OrganizationProfileScreen';
 import {MediaViewerScreen} from '../screens/MediaViewerScreen';
 import {DonationHistoryScreen} from '../screens/DonationHistoryScreen';
 import {UserProfileScreen} from '../screens/UserProfileScreen';
+import {WithdrawScreen} from '../screens/WithdrawScreen';
 
 export type ProfileStackParamList = {
   ProfileMain: undefined;
@@ -46,6 +47,7 @@ export type ProfileStackParamList = {
   };
   DonationHistory: undefined;
   UserProfile: {userId: string};
+  Withdraw: undefined;
 };
 
 const Stack = createNativeStackNavigator<ProfileStackParamList>();
@@ -71,6 +73,7 @@ export function ProfileNavigator() {
       <Stack.Screen name="MediaViewer" component={MediaViewerScreen} options={{animation: 'fade'}} />
       <Stack.Screen name="DonationHistory" component={DonationHistoryScreen} />
       <Stack.Screen name="UserProfile" component={UserProfileScreen} />
+      <Stack.Screen name="Withdraw" component={WithdrawScreen} />
     </Stack.Navigator>
   );
 }

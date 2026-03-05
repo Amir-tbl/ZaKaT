@@ -76,11 +76,11 @@ export function DonationBottomSheet({
       await onConfirm(eurosToCents(amount), applicant?.id ?? null);
       handleClose();
       if (isTreasury) {
-        Alert.alert('Merci !', `Votre don de ${amount} EUR a ete ajoute au tresor.`);
+        Alert.alert('Merci !', `Votre don de ${amount} EUR a été ajouté au trésor.`);
       } else {
         Alert.alert(
-          'Distribution effectuee',
-          `${amount} EUR ont ete attribues a ${applicant?.fullName}.`,
+          'Distribution effectuée',
+          `${amount} EUR ont été attribués à ${applicant?.fullName}.`,
         );
       }
     } catch {
@@ -136,7 +136,7 @@ export function DonationBottomSheet({
                       />
                     </View>
                     <Text style={styles.title}>
-                      {isTreasury ? 'Donner au tresor' : 'Attribuer des fonds'}
+                      {isTreasury ? 'Donner au trésor' : 'Attribuer des fonds'}
                     </Text>
                     {applicant && (
                       <Text style={styles.subtitle}>pour {applicant.fullName}</Text>

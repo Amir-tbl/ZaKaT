@@ -157,7 +157,7 @@ export function OrganizationProfileScreen() {
           {organization.verified && (
             <View style={styles.verifiedBadge}>
               <MaterialCommunityIcons name="check-decagram" size={16} color={colors.primary} />
-              <Text style={styles.verifiedText}>Partenaire verifie</Text>
+              <Text style={styles.verifiedText}>Partenaire vérifié</Text>
             </View>
           )}
 
@@ -224,7 +224,7 @@ export function OrganizationProfileScreen() {
                   color={isFollowing ? colors.primary : '#fff'}
                 />
                 <Text style={[styles.followBtnText, isFollowing && styles.followBtnTextActive]}>
-                  {isFollowing ? 'Abonne' : "S'abonner"}
+                  {isFollowing ? 'Abonné' : "S'abonner"}
                 </Text>
               </>
             )}
@@ -235,7 +235,7 @@ export function OrganizationProfileScreen() {
             <View style={styles.walletStatItem}>
               <Text style={styles.walletStatValue}>{followersCount}</Text>
               <Text style={styles.walletStatLabel}>
-                Abonne{followersCount > 1 ? 's' : ''}
+                Abonné{followersCount > 1 ? 's' : ''}
               </Text>
             </View>
             <View style={styles.walletStatDivider} />
@@ -243,7 +243,7 @@ export function OrganizationProfileScreen() {
               <Text style={styles.walletStatValue}>
                 {formatAmount((organization.walletBalanceCents || 0) / 100)}
               </Text>
-              <Text style={styles.walletStatLabel}>Collecte</Text>
+              <Text style={styles.walletStatLabel}>Collecté</Text>
             </View>
             <View style={styles.walletStatDivider} />
             <View style={styles.walletStatItem}>
@@ -257,7 +257,7 @@ export function OrganizationProfileScreen() {
           {/* Donate button */}
           <TouchableOpacity style={styles.donateBtn} onPress={handleDonate}>
             <MaterialCommunityIcons name="hand-heart" size={20} color="#fff" />
-            <Text style={styles.donateBtnText}>Donner a cette association</Text>
+            <Text style={styles.donateBtnText}>Donner à cette association</Text>
           </TouchableOpacity>
         </View>
 
@@ -271,7 +271,7 @@ export function OrganizationProfileScreen() {
             <EmptyState
               icon="file-document-outline"
               title="Aucune publication"
-              message="Cette association n'a pas encore de demandes publiees."
+              message="Cette association n'a pas encore de demandes publiées."
             />
           ) : (
             requests.map(item => {

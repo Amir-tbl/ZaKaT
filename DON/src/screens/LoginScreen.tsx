@@ -57,7 +57,7 @@ export function LoginScreen() {
     setIsLoading(true);
     try {
       await signIn(email.trim(), password);
-      // Navigation geree par le RootNavigator
+      // Navigation gérée par le RootNavigator
     } catch (err) {
       if (err instanceof AuthError) {
         setError(err.message);
@@ -164,7 +164,7 @@ export function LoginScreen() {
             <TouchableOpacity
               style={styles.forgotPassword}
               onPress={() => navigation.navigate('ForgotPassword')}>
-              <Text style={styles.forgotPasswordText}>Mot de passe oublie ?</Text>
+              <Text style={styles.forgotPasswordText}>Mot de passe oublié ?</Text>
             </TouchableOpacity>
           </View>
 
@@ -199,7 +199,7 @@ export function LoginScreen() {
           <View style={styles.footer}>
             <Text style={styles.footerText}>Pas encore de compte ?</Text>
             <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-              <Text style={styles.linkText}>Creer un compte</Text>
+              <Text style={styles.linkText}>Créer un compte</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

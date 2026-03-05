@@ -115,7 +115,7 @@ export function OnboardingScreen() {
 
     if (accountType === 'individual') {
       if (!firstName.trim()) {
-        setError('Veuillez entrer votre prenom');
+        setError('Veuillez entrer votre prénom');
         return;
       }
       if (!lastName.trim()) {
@@ -140,7 +140,7 @@ export function OnboardingScreen() {
         return;
       }
       if (!legalRepName.trim()) {
-        setError('Veuillez entrer le nom du representant legal');
+        setError('Veuillez entrer le nom du représentant légal');
         return;
       }
       if (!orgEmail.trim()) {
@@ -148,7 +148,7 @@ export function OnboardingScreen() {
         return;
       }
       if (!orgPhone.trim()) {
-        setError('Veuillez entrer le telephone');
+        setError('Veuillez entrer le téléphone');
         return;
       }
 
@@ -166,13 +166,13 @@ export function OnboardingScreen() {
       if (foundedYear.trim()) {
         const year = parseInt(foundedYear, 10);
         if (isNaN(year) || year < 1800 || year > new Date().getFullYear()) {
-          setError('Annee de creation invalide');
+          setError('Année de création invalide');
           return;
         }
       }
 
       if (operatingCountries.length === 0) {
-        setError('Veuillez selectionner au moins 1 pays d\'intervention');
+        setError('Veuillez sélectionner au moins 1 pays d\'intervention');
         return;
       }
     }
@@ -245,10 +245,10 @@ export function OnboardingScreen() {
             <View style={styles.logoContainer}>
               <MaterialCommunityIcons name="account-check" size={48} color={colors.primary} />
             </View>
-            <Text style={styles.title}>Completez votre profil</Text>
+            <Text style={styles.title}>Complétez votre profil</Text>
             <Text style={styles.subtitle}>Choisissez votre type de compte</Text>
             {user?.email && (
-              <Text style={styles.emailHint}>Connecte en tant que {user.email}</Text>
+              <Text style={styles.emailHint}>Connecté en tant que {user.email}</Text>
             )}
           </View>
 
@@ -262,7 +262,7 @@ export function OnboardingScreen() {
               </View>
               <Text style={styles.accountTypeTitle}>Particulier</Text>
               <Text style={styles.accountTypeDesc}>
-                Creer des demandes d'aide a titre personnel
+                Créer des demandes d'aide à titre personnel
               </Text>
             </TouchableOpacity>
 
@@ -282,7 +282,7 @@ export function OnboardingScreen() {
 
           <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
             <MaterialCommunityIcons name="logout" size={20} color={colors.error} />
-            <Text style={styles.signOutText}>Se deconnecter</Text>
+            <Text style={styles.signOutText}>Se déconnecter</Text>
           </TouchableOpacity>
         </ScrollView>
       </SafeAreaView>
@@ -333,7 +333,7 @@ export function OnboardingScreen() {
 
               {/* Title selector */}
               <View style={styles.inputContainer}>
-                <Text style={styles.label}>Civilite</Text>
+                <Text style={styles.label}>Civilité</Text>
                 <View style={styles.titleSelector}>
                   {TITLE_OPTIONS.map((option) => (
                     <TouchableOpacity
@@ -358,7 +358,7 @@ export function OnboardingScreen() {
               {/* First name / Last name row */}
               <View style={styles.row}>
                 <View style={[styles.inputContainer, styles.flex1, {marginRight: spacing.sm}]}>
-                  <Text style={styles.label}>Prenom *</Text>
+                  <Text style={styles.label}>Prénom *</Text>
                   <View style={styles.inputWrapper}>
                     <TextInput
                       style={styles.inputInner}
@@ -388,7 +388,7 @@ export function OnboardingScreen() {
 
               {/* Phone */}
               <View style={styles.inputContainer}>
-                <Text style={styles.label}>Telephone</Text>
+                <Text style={styles.label}>Téléphone</Text>
                 <View style={styles.inputWrapper}>
                   <MaterialCommunityIcons name="phone-outline" size={20} color={colors.mutedText} />
                   <TextInput
@@ -503,7 +503,7 @@ export function OnboardingScreen() {
                   <MaterialCommunityIcons name="text" size={20} color={colors.mutedText} style={{marginTop: 2}} />
                   <TextInput
                     style={[styles.input, {minHeight: 80, textAlignVertical: 'top'}]}
-                    placeholder="Decrivez votre association en quelques phrases..."
+                    placeholder="Décrivez votre association en quelques phrases..."
                     placeholderTextColor={colors.mutedText}
                     value={orgDescription}
                     onChangeText={setOrgDescription}
@@ -515,7 +515,7 @@ export function OnboardingScreen() {
 
               {/* Legal rep name */}
               <View style={styles.inputContainer}>
-                <Text style={styles.label}>Nom du representant legal *</Text>
+                <Text style={styles.label}>Nom du représentant légal *</Text>
                 <View style={styles.inputWrapper}>
                   <MaterialCommunityIcons name="account-tie" size={20} color={colors.mutedText} />
                   <TextInput
@@ -547,7 +547,7 @@ export function OnboardingScreen() {
 
               {/* Phone */}
               <View style={styles.inputContainer}>
-                <Text style={styles.label}>Telephone *</Text>
+                <Text style={styles.label}>Téléphone *</Text>
                 <View style={styles.inputWrapper}>
                   <MaterialCommunityIcons name="phone-outline" size={20} color={colors.mutedText} />
                   <TextInput
@@ -586,7 +586,7 @@ export function OnboardingScreen() {
 
               {/* RNA */}
               <View style={styles.inputContainer}>
-                <Text style={styles.label}>RNA (Numero RNA)</Text>
+                <Text style={styles.label}>RNA (Numéro RNA)</Text>
                 <View style={styles.inputWrapper}>
                   <MaterialCommunityIcons name="card-account-details-outline" size={20} color={colors.mutedText} />
                   <TextInput
@@ -618,7 +618,7 @@ export function OnboardingScreen() {
 
               {/* Founded year */}
               <View style={styles.inputContainer}>
-                <Text style={styles.label}>Annee de creation</Text>
+                <Text style={styles.label}>Année de création</Text>
                 <View style={styles.inputWrapper}>
                   <MaterialCommunityIcons name="calendar" size={20} color={colors.mutedText} />
                   <TextInput
@@ -652,7 +652,7 @@ export function OnboardingScreen() {
               </View>
 
               {/* Social networks */}
-              <Text style={[styles.label, {marginBottom: spacing.sm}]}>Reseaux sociaux</Text>
+              <Text style={[styles.label, {marginBottom: spacing.sm}]}>Réseaux sociaux</Text>
 
               <View style={styles.inputContainer}>
                 <View style={styles.inputWrapper}>
@@ -715,13 +715,13 @@ export function OnboardingScreen() {
                 label="Pays d'intervention *"
                 selectedCodes={operatingCountries}
                 onSelectionChange={setOperatingCountries}
-                placeholder="Selectionner les pays"
+                placeholder="Sélectionner les pays"
                 minSelection={1}
               />
 
               {/* Themes */}
               <View style={styles.inputContainer}>
-                <Text style={styles.label}>Themes principaux</Text>
+                <Text style={styles.label}>Thèmes principaux</Text>
                 <View style={styles.chipsContainer}>
                   {THEMES.map(theme => {
                     const isSelected = selectedThemes.includes(theme.id);
@@ -751,7 +751,7 @@ export function OnboardingScreen() {
               <View style={styles.orgNotice}>
                 <MaterialCommunityIcons name="information-outline" size={18} color={colors.accent} />
                 <Text style={styles.orgNoticeText}>
-                  Votre association sera en attente de verification par notre equipe avant d'apparaitre dans les partenaires.
+                  Votre association sera en attente de vérification par notre équipe avant d'apparaître dans les partenaires.
                 </Text>
               </View>
             </>
@@ -774,7 +774,7 @@ export function OnboardingScreen() {
           {/* Sign out link */}
           <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
             <MaterialCommunityIcons name="logout" size={20} color={colors.error} />
-            <Text style={styles.signOutText}>Se deconnecter</Text>
+            <Text style={styles.signOutText}>Se déconnecter</Text>
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>

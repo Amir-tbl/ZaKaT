@@ -57,12 +57,12 @@ export function ReportModal({
 
   async function handleSubmit() {
     if (!selectedReason) {
-      Alert.alert('Erreur', 'Veuillez selectionner une raison');
+      Alert.alert('Erreur', 'Veuillez sélectionner une raison');
       return;
     }
 
     if (selectedReason === 'other' && !message.trim()) {
-      Alert.alert('Erreur', 'Veuillez preciser la raison du signalement');
+      Alert.alert('Erreur', 'Veuillez préciser la raison du signalement');
       return;
     }
 
@@ -78,13 +78,13 @@ export function ReportModal({
       });
 
       Alert.alert(
-        'Signalement envoye',
-        'Merci de nous avoir signale ce contenu. Notre equipe va l\'examiner.',
+        'Signalement envoyé',
+        'Merci de nous avoir signalé ce contenu. Notre équipe va l\'examiner.',
         [{text: 'OK', onPress: handleClose}]
       );
     } catch (error) {
       console.error('Error submitting report:', error);
-      Alert.alert('Erreur', 'Impossible d\'envoyer le signalement. Veuillez reessayer.');
+      Alert.alert('Erreur', 'Impossible d\'envoyer le signalement. Veuillez réessayer.');
     } finally {
       setLoading(false);
     }
@@ -120,7 +120,7 @@ export function ReportModal({
             <View style={styles.infoBox}>
               <MaterialCommunityIcons name="information" size={20} color={colors.primary} />
               <Text style={styles.infoText}>
-                Les signalements sont anonymes et seront examines par notre equipe de moderation.
+                Les signalements sont anonymes et seront examinés par notre équipe de modération.
               </Text>
             </View>
 
@@ -158,11 +158,11 @@ export function ReportModal({
 
             {/* Message input */}
             <Text style={styles.sectionTitle}>
-              Details supplementaires {selectedReason === 'other' ? '(requis)' : '(optionnel)'}
+              Détails supplémentaires {selectedReason === 'other' ? '(requis)' : '(optionnel)'}
             </Text>
             <TextInput
               style={styles.messageInput}
-              placeholder="Decrivez le probleme..."
+              placeholder="Décrivez le problème..."
               placeholderTextColor={colors.mutedText}
               value={message}
               onChangeText={setMessage}

@@ -35,7 +35,7 @@ export function AboutScreen() {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <MaterialCommunityIcons name="arrow-left" size={24} color={colors.text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>A propos</Text>
+        <Text style={styles.headerTitle}>À propos</Text>
         <View style={styles.placeholder} />
       </View>
 
@@ -50,41 +50,41 @@ export function AboutScreen() {
             <MaterialCommunityIcons name="hand-heart" size={48} color={colors.primary} />
           </View>
           <Text style={styles.appName}>ZaKaT</Text>
-          <Text style={styles.appTagline}>L'entraide simplifiee</Text>
+          <Text style={styles.appTagline}>L'entraide simplifiée</Text>
         </View>
 
         {/* Mission */}
         <Section icon="target" title="Notre mission">
           <Text style={styles.paragraph}>
-            ZaKaT a pour mission de faciliter l'entraide et la solidarite au sein de notre
-            communaute. Nous croyons que chacun peut contribuer, meme modestement, a ameliorer
+            ZaKaT a pour mission de faciliter l'entraide et la solidarité au sein de notre
+            communauté. Nous croyons que chacun peut contribuer, même modestement, à améliorer
             la vie des autres.
           </Text>
         </Section>
 
         {/* How it works - Treasury */}
-        <Section icon="treasure-chest" title="Le Tresor commun">
+        <Section icon="treasure-chest" title="Le Trésor commun">
           <Text style={styles.paragraph}>
-            Le <Text style={styles.bold}>Tresor</Text> est une cagnotte collective alimentee
-            par les dons de la communaute. Ces fonds sont ensuite redistribues aux personnes
+            Le <Text style={styles.bold}>Trésor</Text> est une cagnotte collective alimentée
+            par les dons de la communauté. Ces fonds sont ensuite redistribués aux personnes
             dans le besoin.
           </Text>
           <View style={styles.bulletPoint}>
             <MaterialCommunityIcons name="check-circle" size={18} color={colors.success} />
             <Text style={styles.bulletText}>
-              Donnez le montant de votre choix au Tresor
+              Donnez le montant de votre choix au Trésor
             </Text>
           </View>
           <View style={styles.bulletPoint}>
             <MaterialCommunityIcons name="check-circle" size={18} color={colors.success} />
             <Text style={styles.bulletText}>
-              Les fonds sont geres de maniere transparente
+              Les fonds sont gérés de manière transparente
             </Text>
           </View>
           <View style={styles.bulletPoint}>
             <MaterialCommunityIcons name="check-circle" size={18} color={colors.success} />
             <Text style={styles.bulletText}>
-              Redistribution equitable selon les besoins valides
+              Redistribution équitable selon les besoins validés
             </Text>
           </View>
         </Section>
@@ -92,8 +92,8 @@ export function AboutScreen() {
         {/* How it works - Direct */}
         <Section icon="account-heart" title="Aide directe">
           <Text style={styles.paragraph}>
-            Vous pouvez egalement aider directement une personne en consultant les demandes
-            validees et en contribuant a leur objectif de collecte.
+            Vous pouvez également aider directement une personne en consultant les demandes
+            validées et en contribuant à leur objectif de collecte.
           </Text>
           <View style={styles.bulletPoint}>
             <MaterialCommunityIcons name="check-circle" size={18} color={colors.success} />
@@ -104,13 +104,13 @@ export function AboutScreen() {
           <View style={styles.bulletPoint}>
             <MaterialCommunityIcons name="check-circle" size={18} color={colors.success} />
             <Text style={styles.bulletText}>
-              Toutes les demandes sont verifiees avant publication
+              Toutes les demandes sont vérifiées avant publication
             </Text>
           </View>
           <View style={styles.bulletPoint}>
             <MaterialCommunityIcons name="check-circle" size={18} color={colors.success} />
             <Text style={styles.bulletText}>
-              Suivez l'avancement de la collecte en temps reel
+              Suivez l'avancement de la collecte en temps réel
             </Text>
           </View>
         </Section>
@@ -118,7 +118,7 @@ export function AboutScreen() {
         {/* Zakat */}
         <Section icon="calculator" title="Calculateur Zakat">
           <Text style={styles.paragraph}>
-            Notre calculateur vous aide a estimer votre Zakat annuelle (2,5% de votre epargne).
+            Notre calculateur vous aide à estimer votre Zakat annuelle (2,5% de votre épargne).
             C'est un outil indicatif pour vous accompagner dans votre devoir religieux.
           </Text>
         </Section>
@@ -133,12 +133,12 @@ export function AboutScreen() {
             </View>
             <View style={styles.valueItem}>
               <MaterialCommunityIcons name="lock" size={24} color={colors.primary} />
-              <Text style={styles.valueTitle}>Securite</Text>
-              <Text style={styles.valueText}>Donnees protegees</Text>
+              <Text style={styles.valueTitle}>Sécurité</Text>
+              <Text style={styles.valueText}>Données protégées</Text>
             </View>
             <View style={styles.valueItem}>
               <MaterialCommunityIcons name="heart" size={24} color={colors.primary} />
-              <Text style={styles.valueTitle}>Solidarite</Text>
+              <Text style={styles.valueTitle}>Solidarité</Text>
               <Text style={styles.valueText}>Entraide mutuelle</Text>
             </View>
           </View>
@@ -147,7 +147,7 @@ export function AboutScreen() {
         {/* Footer */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>ZaKaT v1.0.0</Text>
-          <Text style={styles.footerSubtext}>Fait avec coeur pour la communaute</Text>
+          <Text style={styles.footerSubtext}>Fait avec cœur pour la communauté</Text>
         </View>
       </ScrollView>
     </SafeAreaView>

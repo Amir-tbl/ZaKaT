@@ -31,7 +31,7 @@ const TITLE_OPTIONS: TitleOption[] = [
 
 const getTitleLabel = (value: UserTitle): string => {
   const option = TITLE_OPTIONS.find(o => o.value === value);
-  return option?.label || 'Non specifie';
+  return option?.label || 'Non spécifié';
 };
 
 export function EditProfileScreen() {
@@ -80,7 +80,7 @@ export function EditProfileScreen() {
 
   const handleSave = async () => {
     if (!firstName.trim()) {
-      Alert.alert('Erreur', 'Le prenom est obligatoire');
+      Alert.alert('Erreur', 'Le prénom est obligatoire');
       return;
     }
 
@@ -90,7 +90,7 @@ export function EditProfileScreen() {
     }
 
     if (!validatePhone(phone)) {
-      Alert.alert('Erreur', 'Le numero de telephone doit contenir entre 8 et 15 caracteres');
+      Alert.alert('Erreur', 'Le numéro de téléphone doit contenir entre 8 et 15 caractères');
       return;
     }
 
@@ -106,7 +106,7 @@ export function EditProfileScreen() {
       });
       setProfile(updated);
       setIsEditMode(false);
-      Alert.alert('Succes', 'Profil enregistre avec succes');
+      Alert.alert('Succès', 'Profil enregistré avec succès');
     } catch (error) {
       Alert.alert('Erreur', 'Impossible de sauvegarder le profil');
     } finally {
@@ -171,12 +171,12 @@ export function EditProfileScreen() {
               {profile && isIndividualProfile(profile) && (
                 <>
                   <View style={styles.infoRow}>
-                    <Text style={styles.infoLabel}>Civilite</Text>
+                    <Text style={styles.infoLabel}>Civilité</Text>
                     <Text style={styles.infoValue}>{getTitleLabel(profile.title || 'non_specifie')}</Text>
                   </View>
 
                   <View style={styles.infoRow}>
-                    <Text style={styles.infoLabel}>Prenom</Text>
+                    <Text style={styles.infoLabel}>Prénom</Text>
                     <Text style={styles.infoValue}>{profile.firstName || '-'}</Text>
                   </View>
 
@@ -196,7 +196,7 @@ export function EditProfileScreen() {
                   </View>
 
                   <View style={styles.infoRow}>
-                    <Text style={styles.infoLabel}>Representant legal</Text>
+                    <Text style={styles.infoLabel}>Représentant légal</Text>
                     <Text style={styles.infoValue}>{profile.legalRepName || '-'}</Text>
                   </View>
 
@@ -213,7 +213,7 @@ export function EditProfileScreen() {
                         profile.orgStatus === 'rejected' && styles.statusTextRejected,
                       ]}>
                         {profile.orgStatus === 'pending' ? 'En attente' :
-                         profile.orgStatus === 'verified' ? 'Verifiee' : 'Non verifiee'}
+                         profile.orgStatus === 'verified' ? 'Vérifiée' : 'Non vérifiée'}
                       </Text>
                     </View>
                   </View>
@@ -251,7 +251,7 @@ export function EditProfileScreen() {
               </View>
 
               <View style={styles.infoRow}>
-                <Text style={styles.infoLabel}>Telephone</Text>
+                <Text style={styles.infoLabel}>Téléphone</Text>
                 <Text style={styles.infoValue}>{profile?.phone || '-'}</Text>
               </View>
 
@@ -282,7 +282,7 @@ export function EditProfileScreen() {
             <View style={styles.orgNotice}>
               <MaterialCommunityIcons name="information-outline" size={18} color={colors.accent} />
               <Text style={styles.orgNoticeText}>
-                La modification du profil association sera bientot disponible.
+                La modification du profil association sera bientôt disponible.
               </Text>
             </View>
           )}
@@ -317,14 +317,14 @@ export function EditProfileScreen() {
             <View style={styles.avatar}>
               <MaterialCommunityIcons name="account" size={50} color={colors.primary} />
             </View>
-            <Text style={styles.avatarHint}>Photo de profil (bientot)</Text>
+            <Text style={styles.avatarHint}>Photo de profil (bientôt)</Text>
           </View>
 
           {/* Form */}
           <View style={styles.form}>
             {/* Title selector */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Civilite</Text>
+              <Text style={styles.label}>Civilité</Text>
               <View style={styles.titleSelector}>
                 {TITLE_OPTIONS.map((option) => (
                   <TouchableOpacity
@@ -347,12 +347,12 @@ export function EditProfileScreen() {
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Prenom *</Text>
+              <Text style={styles.label}>Prénom *</Text>
               <TextInput
                 style={styles.input}
                 value={firstName}
                 onChangeText={setFirstName}
-                placeholder="Votre prenom"
+                placeholder="Votre prénom"
                 placeholderTextColor={colors.mutedText}
               />
             </View>
@@ -374,11 +374,11 @@ export function EditProfileScreen() {
                 <Text style={styles.readOnlyText}>{authUser?.email || ''}</Text>
                 <MaterialCommunityIcons name="lock" size={18} color={colors.mutedText} />
               </View>
-              <Text style={styles.hint}>L'email ne peut pas etre modifie</Text>
+              <Text style={styles.hint}>L'email ne peut pas être modifié</Text>
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Telephone</Text>
+              <Text style={styles.label}>Téléphone</Text>
               <TextInput
                 style={styles.input}
                 value={phone}

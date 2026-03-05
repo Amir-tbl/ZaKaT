@@ -44,9 +44,9 @@ export function ForgotPasswordScreen() {
     } catch (err: any) {
       const message = err?.message || '';
       if (message.includes('Aucun compte')) {
-        setError('Aucun compte associe a cet email');
+        setError('Aucun compte associé à cet email');
       } else {
-        setError('Une erreur est survenue. Veuillez reessayer.');
+        setError('Une erreur est survenue. Veuillez réessayer.');
       }
     } finally {
       setIsLoading(false);
@@ -73,9 +73,9 @@ export function ForgotPasswordScreen() {
             <View style={styles.iconContainer}>
               <MaterialCommunityIcons name="lock-reset" size={48} color={colors.primary} />
             </View>
-            <Text style={styles.title}>Mot de passe oublie ?</Text>
+            <Text style={styles.title}>Mot de passe oublié ?</Text>
             <Text style={styles.subtitle}>
-              Entrez votre email pour recevoir un code de verification
+              Entrez votre email pour recevoir un code de vérification
             </Text>
           </View>
 

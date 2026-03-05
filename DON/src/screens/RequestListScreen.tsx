@@ -22,9 +22,9 @@ interface Props {
 
 const STATUS_BADGE: Record<string, {text: string; variant: 'info' | 'success' | 'warning' | 'error'}> = {
   pending: {text: 'En attente', variant: 'warning'},
-  verified: {text: 'Verifiee', variant: 'success'},
-  rejected: {text: 'Refusee', variant: 'error'},
-  closed: {text: 'Fermee', variant: 'info'},
+  verified: {text: 'Vérifiée', variant: 'success'},
+  rejected: {text: 'Refusée', variant: 'error'},
+  closed: {text: 'Fermée', variant: 'info'},
 };
 
 export function RequestListScreen({navigation}: Props) {
@@ -82,7 +82,7 @@ export function RequestListScreen({navigation}: Props) {
               <MaterialCommunityIcons name={themeInfo.icon as any} size={12} color={themeInfo.color} />
             )}
             <Text style={[styles.categoryLabel, themeInfo && {color: themeInfo.color}]}>
-              {themeInfo?.label || 'Non classe'}
+              {themeInfo?.label || 'Non classé'}
             </Text>
           </View>
           <Badge text={badge.text} variant={badge.variant} />
@@ -157,7 +157,7 @@ export function RequestListScreen({navigation}: Props) {
           <EmptyState
             icon="file-document-outline"
             title="Aucune demande"
-            message="Creez votre premiere demande d'aide en appuyant sur le bouton +"
+            message="Créez votre première demande d'aide en appuyant sur le bouton +"
           />
         }
       />

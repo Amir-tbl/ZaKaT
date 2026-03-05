@@ -30,15 +30,15 @@ const ENTITY_TABS: {key: EntityType; label: string; icon: string}[] = [
 
 const STATUS_TABS: {key: TabFilter; label: string}[] = [
   {key: 'pending', label: 'En attente'},
-  {key: 'verified', label: 'Acceptees'},
-  {key: 'rejected', label: 'Refusees'},
+  {key: 'verified', label: 'Acceptées'},
+  {key: 'rejected', label: 'Refusées'},
 ];
 
 const STATUS_BADGE: Record<string, {text: string; variant: 'info' | 'success' | 'warning' | 'error'}> = {
   pending: {text: 'En attente', variant: 'warning'},
-  verified: {text: 'Verifiee', variant: 'success'},
-  rejected: {text: 'Refusee', variant: 'error'},
-  closed: {text: 'Fermee', variant: 'info'},
+  verified: {text: 'Vérifiée', variant: 'success'},
+  rejected: {text: 'Refusée', variant: 'error'},
+  closed: {text: 'Fermée', variant: 'info'},
 };
 
 interface Props {
@@ -103,7 +103,7 @@ export function AdminScreen({navigation}: Props) {
   async function handleInitTreasury() {
     Alert.alert(
       'Initialiser Treasury',
-      'Ceci va creer la collection treasury dans Firestore. A faire une seule fois.',
+      'Ceci va créer la collection treasury dans Firestore. À faire une seule fois.',
       [
         {text: 'Annuler', style: 'cancel'},
         {
@@ -111,9 +111,9 @@ export function AdminScreen({navigation}: Props) {
           onPress: async () => {
             try {
               const result = await initializeTreasury();
-              Alert.alert('Succes', result.message);
+              Alert.alert('Succès', result.message);
             } catch (error: any) {
-              Alert.alert('Erreur', error.message || 'Echec de l\'initialisation');
+              Alert.alert('Erreur', error.message || 'Échec de l\'initialisation');
             }
           },
         },
@@ -196,12 +196,12 @@ export function AdminScreen({navigation}: Props) {
   // ========== ORGANIZATION HANDLERS ==========
   async function handleAcceptOrg(id: string) {
     Alert.alert(
-      'Verifier l\'association',
+      'Vérifier l\'association',
       'Cette association sera visible publiquement.',
       [
         {text: 'Annuler', style: 'cancel'},
         {
-          text: 'Verifier',
+          text: 'Vérifier',
           onPress: async () => {
             await organizationService.updateStatus(id, 'verified', 'admin');
             loadData();
@@ -258,7 +258,7 @@ export function AdminScreen({navigation}: Props) {
         <View style={styles.cardHeader}>
           <View style={[styles.categoryBadge, themeInfo && {backgroundColor: themeInfo.color + '20'}]}>
             <Text style={[styles.categoryText, themeInfo && {color: themeInfo.color}]}>
-              {themeInfo?.label || 'Non classe'}
+              {themeInfo?.label || 'Non classé'}
             </Text>
           </View>
           <Badge text={badge.text} variant={badge.variant} />
@@ -274,7 +274,7 @@ export function AdminScreen({navigation}: Props) {
 
         <View style={styles.cardPersons}>
           <Text style={typography.caption}>Auteur: {item.authorDisplayName}</Text>
-          <Text style={typography.caption}>Beneficiaire: {ben.firstName} {ben.lastName}</Text>
+          <Text style={typography.caption}>Bénéficiaire: {ben.firstName} {ben.lastName}</Text>
           <Text style={typography.caption}>{formatDate(item.createdAt)}</Text>
         </View>
 
@@ -312,7 +312,7 @@ export function AdminScreen({navigation}: Props) {
         <View style={styles.cardHeader}>
           <View style={[styles.categoryBadge, themeInfo && {backgroundColor: themeInfo.color + '20'}]}>
             <Text style={[styles.categoryText, themeInfo && {color: themeInfo.color}]}>
-              {themeInfo?.label || 'Non classe'}
+              {themeInfo?.label || 'Non classé'}
             </Text>
           </View>
           <Badge text={badge.text} variant={badge.variant} />
@@ -370,7 +370,7 @@ export function AdminScreen({navigation}: Props) {
         </View>
 
         <View style={styles.cardPersons}>
-          <Text style={typography.caption}>Themes: {item.themes.join(', ') || 'Non defini'}</Text>
+          <Text style={typography.caption}>Thèmes: {item.themes.join(', ') || 'Non défini'}</Text>
           <Text style={typography.caption}>{formatDate(item.createdAt)}</Text>
         </View>
 
@@ -385,7 +385,7 @@ export function AdminScreen({navigation}: Props) {
           <View style={styles.actions}>
             <TouchableOpacity style={styles.acceptBtn} onPress={() => handleAcceptOrg(item.id)}>
               <MaterialCommunityIcons name="check" size={20} color={colors.surface} />
-              <Text style={styles.actionBtnText}>Verifier</Text>
+              <Text style={styles.actionBtnText}>Vérifier</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.rejectBtn} onPress={() => handleRejectOrg(item.id)}>
               <MaterialCommunityIcons name="close" size={20} color={colors.surface} />
@@ -411,7 +411,7 @@ export function AdminScreen({navigation}: Props) {
 
   const getEmptyMessage = () => {
     const typeLabels = {requests: 'demande', posts: 'post', organizations: 'association'};
-    const statusLabels = {pending: 'en attente', verified: 'acceptee', rejected: 'refusee'};
+    const statusLabels = {pending: 'en attente', verified: 'acceptée', rejected: 'refusée'};
     return `Aucune ${typeLabels[entityType]} ${statusLabels[activeTab]}.`;
   };
 
@@ -422,7 +422,7 @@ export function AdminScreen({navigation}: Props) {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
           <MaterialCommunityIcons name="arrow-left" size={24} color={colors.text} />
         </TouchableOpacity>
-        <Text style={typography.h2}>Moderation</Text>
+        <Text style={typography.h2}>Modération</Text>
         <View style={{width: 40}} />
       </View>
 
@@ -484,7 +484,7 @@ export function AdminScreen({navigation}: Props) {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />
         }
         ListEmptyComponent={
-          <EmptyState icon="check-circle-outline" title="Aucun element" message={getEmptyMessage()} />
+          <EmptyState icon="check-circle-outline" title="Aucun élément" message={getEmptyMessage()} />
         }
       />
     </View>

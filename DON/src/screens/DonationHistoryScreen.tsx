@@ -27,7 +27,7 @@ const DONATION_TYPE_COLORS: Record<string, string> = {
 };
 
 const DONATION_TYPE_LABELS: Record<string, string> = {
-  treasury: 'Tresor ZaKaT',
+  treasury: 'Trésor ZaKaT',
   request: 'Demande',
   organization: 'Association',
 };
@@ -129,7 +129,7 @@ export function DonationHistoryScreen() {
 
           <View style={styles.donationFooter}>
             <Text style={styles.donationDate}>
-              {formatDate(item.createdAt)} a {formatTime(item.createdAt)}
+              {formatDate(item.createdAt)} à {formatTime(item.createdAt)}
             </Text>
             {(item.type === 'request' || item.type === 'organization') && (
               <MaterialCommunityIcons name="chevron-right" size={18} color={colors.mutedText} />
@@ -172,7 +172,7 @@ export function DonationHistoryScreen() {
         <View style={styles.statsBanner}>
           <View style={styles.statItem}>
             <Text style={styles.statValue}>{formatAmount(totalDonated)}</Text>
-            <Text style={styles.statLabel}>Total donne</Text>
+            <Text style={styles.statLabel}>Total donné</Text>
           </View>
           <View style={styles.statDivider} />
           <View style={styles.statItem}>
@@ -202,7 +202,7 @@ export function DonationHistoryScreen() {
           <EmptyState
             icon="hand-heart-outline"
             title="Aucun don"
-            message="Vous n'avez pas encore fait de don. Soutenez une cause qui vous tient a coeur !"
+            message="Vous n'avez pas encore fait de don. Soutenez une cause qui vous tient à cœur !"
           />
         }
       />

@@ -73,3 +73,8 @@ DON-server/dist/
 # Admin web build
 admin-web/dist/
 admin-web/node_modules/
+
+# Firebase cache & hosting build
+.firebase/
+DON/firebase/.firebase/
+DON/firebase/public/

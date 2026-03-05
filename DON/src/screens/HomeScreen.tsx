@@ -1,8 +1,7 @@
-import React, {useState, useCallback, useMemo, useEffect} from 'react';
+import React, {useState, useCallback, useMemo} from 'react';
 import {
   View,
   Text,
-  TextInput,
   FlatList,
   StyleSheet,
   RefreshControl,
@@ -25,7 +24,6 @@ import {organizationService} from '../services/organization';
 import {Post, postService} from '../services/post';
 import {THEMES, getThemeById} from '../services/themes';
 import {notificationService} from '../services/notification';
-import {profileService, UserProfile, isOrganizationProfile, isIndividualProfile} from '../services/profile';
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
 
@@ -35,8 +33,8 @@ type TabType = 'fil' | 'demandes';
 const COLLECTIONS = [
   {id: 'urgent', label: 'Urgences du moment', icon: 'fire', color: '#EF4444', filter: (r: ZakatRequest) => r.urgent},
   {id: 'env', label: 'Environnement', icon: 'leaf', color: '#22C55E', filter: (r: ZakatRequest) => r.themes.includes('environnement')},
-  {id: 'edu', label: 'Education mondiale', icon: 'school', color: '#3B82F6', filter: (r: ZakatRequest) => r.themes.includes('education')},
-  {id: 'sante', label: 'Sante', icon: 'hospital-box', color: '#EF4444', filter: (r: ZakatRequest) => r.themes.includes('sante') || r.category === 'sante'},
+  {id: 'edu', label: 'Éducation mondiale', icon: 'school', color: '#3B82F6', filter: (r: ZakatRequest) => r.themes.includes('education')},
+  {id: 'sante', label: 'Santé', icon: 'hospital-box', color: '#EF4444', filter: (r: ZakatRequest) => r.themes.includes('sante') || r.category === 'sante'},
 ];
 
 export function HomeScreen() {
@@ -45,13 +43,10 @@ export function HomeScreen() {
   const [requests, setRequests] = useState<ZakatRequest[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
-  const [searchedUsers, setSearchedUsers] = useState<UserProfile[]>([]);
-  const [search, setSearch] = useState('');
   const [refreshing, setRefreshing] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState<FilterState>({...DEFAULT_FILTERS});
   const [unreadNotifCount, setUnreadNotifCount] = useState(0);
-  const [searchLoading, setSearchLoading] = useState(false);
 
   const loadData = useCallback(async () => {
     const [reqs, orgs, allPosts, unreadCount] = await Promise.all([
@@ -69,22 +64,6 @@ export function HomeScreen() {
 
   useFocusEffect(useCallback(() => { loadData(); }, [loadData]));
 
-  // Search for users when search query changes
-  useEffect(() => {
-    const searchUsers = async () => {
-      if (search.trim().length >= 2) {
-        setSearchLoading(true);
-        const users = await profileService.searchUsers(search);
-        setSearchedUsers(users);
-        setSearchLoading(false);
-      } else {
-        setSearchedUsers([]);
-      }
-    };
-
-    const debounce = setTimeout(searchUsers, 300);
-    return () => clearTimeout(debounce);
-  }, [search]);
 
   async function onRefresh() {
     setRefreshing(true);
@@ -92,29 +71,9 @@ export function HomeScreen() {
     setRefreshing(false);
   }
 
-  // Apply search + filters
+  // Apply filters
   const filtered = useMemo(() => {
     let result = requests;
-
-    // Text search
-    if (search.trim()) {
-      const q = search.toLowerCase().trim();
-      result = result.filter(r => {
-        const ben = r.beneficiary;
-        return (
-          r.title.toLowerCase().includes(q) ||
-          r.description.toLowerCase().includes(q) ||
-          r.city.toLowerCase().includes(q) ||
-          r.country.toLowerCase().includes(q) ||
-          ben.firstName.toLowerCase().includes(q) ||
-          ben.lastName.toLowerCase().includes(q) ||
-          (ben.city && ben.city.toLowerCase().includes(q)) ||
-          ben.country.toLowerCase().includes(q) ||
-          (r.organizationName && r.organizationName.toLowerCase().includes(q)) ||
-          r.themes.some(t => t.toLowerCase().includes(q))
-        );
-      });
-    }
 
     // Theme filter
     if (filters.themes.length > 0) {
@@ -139,25 +98,11 @@ export function HomeScreen() {
     }
 
     return result;
-  }, [requests, search, filters]);
+  }, [requests, filters]);
 
   // Filter posts (for Fil tab)
   const filteredPosts = useMemo(() => {
     let result = posts;
-
-    // Text search
-    if (search.trim()) {
-      const q = search.toLowerCase().trim();
-      result = result.filter(p => {
-        return (
-          p.description.toLowerCase().includes(q) ||
-          p.authorDisplayName.toLowerCase().includes(q) ||
-          (p.location?.city && p.location.city.toLowerCase().includes(q)) ||
-          (p.location?.country && p.location.country.toLowerCase().includes(q)) ||
-          p.themes.some(t => t.toLowerCase().includes(q))
-        );
-      });
-    }
 
     // Theme filter
     if (filters.themes.length > 0) {
@@ -167,9 +112,9 @@ export function HomeScreen() {
     }
 
     return result;
-  }, [posts, search, filters]);
+  }, [posts, filters]);
 
-  const isSearching = search.trim().length > 0 || hasActiveFilters(filters);
+  const isSearching = hasActiveFilters(filters);
   const activeFilterCount =
     filters.themes.length +
     (filters.type !== 'all' ? 1 : 0) +
@@ -189,11 +134,6 @@ export function HomeScreen() {
   function openOrganization(orgId: string) {
     // Navigate within Home stack to keep context
     navigation.navigate('OrganizationProfile', {organizationId: orgId});
-  }
-
-  function openTreasuryDonation() {
-    // Navigate within Home stack to keep context
-    navigation.navigate('Donate', {type: 'treasury'});
   }
 
   function handleAuthorPress(userId: string, type: 'user' | 'organization') {
@@ -219,24 +159,6 @@ export function HomeScreen() {
     });
   }
 
-  function openUserProfile(userId: string) {
-    navigation.navigate('UserProfile', {userId});
-  }
-
-  function getProfileDisplayName(profile: UserProfile): string {
-    if (isOrganizationProfile(profile)) {
-      return profile.organizationName || 'Association';
-    } else if (isIndividualProfile(profile)) {
-      const name = `${profile.firstName || ''} ${profile.lastName || ''}`.trim();
-      return name || 'Utilisateur';
-    }
-    return 'Utilisateur';
-  }
-
-  function getProfileInitials(profile: UserProfile): string {
-    const name = getProfileDisplayName(profile);
-    return name.charAt(0).toUpperCase();
-  }
 
   function formatAmount(amount: number): string {
     return new Intl.NumberFormat('fr-FR', {
@@ -247,38 +169,6 @@ export function HomeScreen() {
   }
 
   // -- Render helpers --
-
-  function renderUserCard(profile: UserProfile) {
-    const isOrg = isOrganizationProfile(profile);
-    const displayName = getProfileDisplayName(profile);
-    const initials = getProfileInitials(profile);
-    const location = [profile.city, profile.country].filter(Boolean).join(', ');
-
-    return (
-      <TouchableOpacity
-        key={profile.id}
-        style={styles.userCard}
-        activeOpacity={0.7}
-        onPress={() => openUserProfile(profile.id)}>
-        <View style={[styles.userAvatar, isOrg && styles.userAvatarOrg]}>
-          <Text style={styles.userAvatarText}>{initials}</Text>
-        </View>
-        <View style={styles.userInfo}>
-          <Text style={styles.userName}>{displayName}</Text>
-          {location ? (
-            <View style={styles.userLocationRow}>
-              <MaterialCommunityIcons name="map-marker" size={12} color={colors.mutedText} />
-              <Text style={styles.userLocation}>{location}</Text>
-            </View>
-          ) : null}
-          <Text style={styles.userType}>
-            {isOrg ? 'Association' : 'Particulier'}
-          </Text>
-        </View>
-        <MaterialCommunityIcons name="chevron-right" size={20} color={colors.mutedText} />
-      </TouchableOpacity>
-    );
-  }
 
   function renderRequestCard(item: ZakatRequest) {
     const ben = item.beneficiary;
@@ -424,25 +314,9 @@ export function HomeScreen() {
         showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />}
         contentContainerStyle={styles.searchResultsContainer}>
-        {/* User search results */}
-        {searchedUsers.length > 0 && (
-          <View style={styles.searchSection}>
-            <Text style={styles.searchSectionTitle}>
-              <MaterialCommunityIcons name="account-group" size={16} color={colors.primary} /> Profils ({searchedUsers.length})
-            </Text>
-            {searchedUsers.slice(0, 5).map(profile => renderUserCard(profile))}
-            {searchedUsers.length > 5 && (
-              <Text style={styles.moreResultsText}>
-                +{searchedUsers.length - 5} autres profils...
-              </Text>
-            )}
-          </View>
-        )}
-
-        {/* Post search results */}
         <View style={styles.searchSection}>
           <Text style={styles.searchSectionTitle}>
-            <MaterialCommunityIcons name="newspaper-variant-multiple" size={16} color={colors.primary} /> Publications ({filteredPosts.length})
+            Publications filtrées ({filteredPosts.length})
           </Text>
           {filteredPosts.length > 0 ? (
             filteredPosts.map(item => (
@@ -456,20 +330,13 @@ export function HomeScreen() {
               />
             ))
           ) : (
-            <View style={styles.emptySearchSection}>
-              <Text style={styles.emptySearchText}>Aucune publication trouvee</Text>
-            </View>
+            <EmptyState
+              icon="filter-off"
+              title="Aucun résultat"
+              message="Aucune publication ne correspond aux filtres."
+            />
           )}
         </View>
-
-        {/* Show message if no results at all */}
-        {searchedUsers.length === 0 && filteredPosts.length === 0 && !searchLoading && (
-          <EmptyState
-            icon="magnify"
-            title="Aucun resultat"
-            message={`Aucun resultat pour "${search}"`}
-          />
-        )}
       </ScrollView>
     ) : (
       <FlatList
@@ -489,9 +356,9 @@ export function HomeScreen() {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />}
         ListHeaderComponent={
           <View style={styles.filHeader}>
-            <Text style={styles.filTitle}>Publications recentes</Text>
+            <Text style={styles.filTitle}>Publications récentes</Text>
             <Text style={styles.filSubtitle}>
-              Actualites et impact des associations
+              Actualités et impact des associations
             </Text>
           </View>
         }
@@ -499,7 +366,7 @@ export function HomeScreen() {
           <EmptyState
             icon="newspaper-variant-outline"
             title="Aucune publication"
-            message="Les publications des associations apparaitront ici."
+            message="Les publications des associations apparaîtront ici."
           />
         }
       />
@@ -523,45 +390,22 @@ export function HomeScreen() {
           showsVerticalScrollIndicator={false}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />}
           contentContainerStyle={styles.searchResultsContainer}>
-          {/* User search results */}
-          {searchedUsers.length > 0 && (
-            <View style={styles.searchSection}>
-              <Text style={styles.searchSectionTitle}>
-                <MaterialCommunityIcons name="account-group" size={16} color={colors.primary} /> Profils ({searchedUsers.length})
-              </Text>
-              {searchedUsers.slice(0, 5).map(profile => renderUserCard(profile))}
-              {searchedUsers.length > 5 && (
-                <Text style={styles.moreResultsText}>
-                  +{searchedUsers.length - 5} autres profils...
-                </Text>
-              )}
-            </View>
-          )}
-
-          {/* Request search results */}
           <View style={styles.searchSection}>
             <Text style={styles.searchSectionTitle}>
-              <MaterialCommunityIcons name="hand-heart" size={16} color={colors.primary} /> Demandes ({filtered.length})
+              Demandes filtrées ({filtered.length})
             </Text>
             {filtered.length > 0 ? (
               <View style={styles.listPadding}>
                 {filtered.map(item => renderRequestCard(item))}
               </View>
             ) : (
-              <View style={styles.emptySearchSection}>
-                <Text style={styles.emptySearchText}>Aucune demande trouvee</Text>
-              </View>
+              <EmptyState
+                icon="filter-off"
+                title="Aucun résultat"
+                message="Aucune demande ne correspond aux filtres."
+              />
             )}
           </View>
-
-          {/* Show message if no results at all */}
-          {searchedUsers.length === 0 && filtered.length === 0 && !searchLoading && (
-            <EmptyState
-              icon="magnify"
-              title="Aucun resultat"
-              message={`Aucun resultat pour "${search}"`}
-            />
-          )}
         </ScrollView>
       );
     }
@@ -574,7 +418,7 @@ export function HomeScreen() {
 
         {/* Themes horizontal */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Explorer par theme</Text>
+          <Text style={styles.sectionTitle}>Explorer par thème</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.themesScroll}>
             {THEMES.map(theme => (
               <TouchableOpacity
@@ -582,7 +426,6 @@ export function HomeScreen() {
                 style={[styles.themeCard, {backgroundColor: theme.color + '12'}]}
                 onPress={() => {
                   setFilters(prev => ({...prev, themes: [theme.id]}));
-                  setSearch('');
                 }}>
                 <View style={[styles.themeIconCircle, {backgroundColor: theme.color + '25'}]}>
                   <MaterialCommunityIcons name={theme.icon as any} size={24} color={theme.color} />
@@ -681,7 +524,7 @@ export function HomeScreen() {
           {requests.length === 0 ? (
             <View style={styles.emptyInline}>
               <MaterialCommunityIcons name="hand-heart-outline" size={40} color={colors.border} />
-              <Text style={[typography.caption, {marginTop: spacing.sm}]}>Aucune demande verifiee pour le moment.</Text>
+              <Text style={[typography.caption, {marginTop: spacing.sm}]}>Aucune demande vérifiée pour le moment.</Text>
             </View>
           ) : (
             requests.map(item => renderRequestCard(item))
@@ -711,6 +554,11 @@ export function HomeScreen() {
           <Text style={styles.headerTitle}>Explore</Text>
           <View style={styles.headerActions}>
             <TouchableOpacity
+              onPress={() => navigation.navigate('Search')}
+              style={styles.headerBtn}>
+              <MaterialCommunityIcons name="magnify" size={24} color={colors.text} />
+            </TouchableOpacity>
+            <TouchableOpacity
               onPress={() => navigation.navigate('Notifications')}
               style={styles.headerBtn}>
               <MaterialCommunityIcons name="bell-outline" size={24} color={colors.text} />
@@ -732,24 +580,7 @@ export function HomeScreen() {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={styles.searchContainer}>
-          <MaterialCommunityIcons name="magnify" size={20} color={colors.mutedText} />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Rechercher profils, associations, themes..."
-            placeholderTextColor={colors.mutedText}
-            value={search}
-            onChangeText={setSearch}
-            returnKeyType="search"
-            clearButtonMode="while-editing"
-          />
-          {search.length > 0 && (
-            <TouchableOpacity onPress={() => setSearch('')}>
-              <MaterialCommunityIcons name="close-circle" size={18} color={colors.mutedText} />
-            </TouchableOpacity>
-          )}
-        </View>
-        {activeFilterCount > 0 && !search.trim() && (
+        {activeFilterCount > 0 && (
           <TouchableOpacity
             style={styles.activeFilterBar}
             onPress={() => setFilters({...DEFAULT_FILTERS})}>
@@ -760,17 +591,6 @@ export function HomeScreen() {
           </TouchableOpacity>
         )}
 
-        {/* Treasury donation button */}
-        <TouchableOpacity style={styles.treasuryBtn} onPress={openTreasuryDonation}>
-          <View style={styles.treasuryIconCircle}>
-            <MaterialCommunityIcons name="treasure-chest" size={24} color={colors.primary} />
-          </View>
-          <View style={styles.treasuryTextContainer}>
-            <Text style={styles.treasuryTitle}>Faire un don general</Text>
-            <Text style={styles.treasurySubtitle}>Soutenez le tresor ZaKaT</Text>
-          </View>
-          <MaterialCommunityIcons name="chevron-right" size={24} color={colors.mutedText} />
-        </TouchableOpacity>
       </View>
     );
   }
@@ -907,25 +727,6 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: '700',
   },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.surface,
-    marginHorizontal: spacing.lg,
-    marginBottom: spacing.md,
-    paddingHorizontal: spacing.md,
-    borderRadius: borderRadius.md,
-    borderWidth: 1,
-    borderColor: colors.border,
-    height: 44,
-    gap: spacing.sm,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 15,
-    color: colors.text,
-    paddingVertical: 0,
-  },
   activeFilterBar: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -941,42 +742,6 @@ const styles = StyleSheet.create({
     ...typography.bodySmall,
     color: colors.primary,
     fontWeight: '600',
-  },
-
-  // Treasury donation button
-  treasuryBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.surface,
-    marginHorizontal: spacing.lg,
-    marginBottom: spacing.md,
-    padding: spacing.md,
-    borderRadius: borderRadius.lg,
-    borderWidth: 2,
-    borderColor: colors.primary + '30',
-    ...shadows.sm,
-  },
-  treasuryIconCircle: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: colors.primary + '15',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  treasuryTextContainer: {
-    flex: 1,
-    marginLeft: spacing.md,
-  },
-  treasuryTitle: {
-    ...typography.body,
-    fontWeight: '700',
-    color: colors.text,
-  },
-  treasurySubtitle: {
-    ...typography.caption,
-    color: colors.mutedText,
-    marginTop: 2,
   },
 
   // Sections
@@ -1281,68 +1046,5 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
-  },
-  emptySearchSection: {
-    padding: spacing.lg,
-    alignItems: 'center',
-  },
-  emptySearchText: {
-    ...typography.caption,
-    color: colors.mutedText,
-  },
-  moreResultsText: {
-    ...typography.caption,
-    color: colors.primary,
-    textAlign: 'center',
-    paddingVertical: spacing.sm,
-  },
-  // User card styles
-  userCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.surface,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  userAvatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  userAvatarOrg: {
-    backgroundColor: colors.accent,
-  },
-  userAvatarText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '700',
-  },
-  userInfo: {
-    flex: 1,
-    marginLeft: spacing.md,
-  },
-  userName: {
-    ...typography.body,
-    fontWeight: '600',
-  },
-  userLocationRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 2,
-    marginTop: 2,
-  },
-  userLocation: {
-    ...typography.caption,
-    color: colors.mutedText,
-  },
-  userType: {
-    ...typography.caption,
-    color: colors.mutedText,
-    marginTop: 2,
   },
 });

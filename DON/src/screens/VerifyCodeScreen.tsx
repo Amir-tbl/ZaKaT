@@ -79,7 +79,7 @@ export function VerifyCodeScreen() {
 
   const handleVerify = async () => {
     if (codeExpired) {
-      setError('Le code a expire. Veuillez en demander un nouveau.');
+      setError('Le code a expiré. Veuillez en demander un nouveau.');
       return;
     }
 
@@ -98,10 +98,10 @@ export function VerifyCodeScreen() {
     } catch (err: any) {
       const message = err?.message || '';
       if (message.includes('expire')) {
-        setError('Le code a expire. Veuillez en demander un nouveau.');
+        setError('Le code a expiré. Veuillez en demander un nouveau.');
         setCodeExpired(true);
       } else {
-        setError('Code invalide. Veuillez verifier et reessayer.');
+        setError('Code invalide. Veuillez vérifier et réessayer.');
       }
     } finally {
       setIsLoading(false);
@@ -120,7 +120,7 @@ export function VerifyCodeScreen() {
       setCodeExpired(false);
       inputRefs.current[0]?.focus();
     } catch {
-      setError('Erreur lors du renvoi. Veuillez reessayer.');
+      setError('Erreur lors du renvoi. Veuillez réessayer.');
     } finally {
       setIsResending(false);
     }
@@ -146,9 +146,9 @@ export function VerifyCodeScreen() {
             <View style={styles.iconContainer}>
               <MaterialCommunityIcons name="email-check-outline" size={48} color={colors.primary} />
             </View>
-            <Text style={styles.title}>Verification</Text>
+            <Text style={styles.title}>Vérification</Text>
             <Text style={styles.subtitle}>
-              Un code a 6 chiffres a ete envoye a{'\n'}
+              Un code à 6 chiffres a été envoyé à{'\n'}
               <Text style={styles.emailText}>{email}</Text>
             </Text>
           </View>
@@ -165,7 +165,7 @@ export function VerifyCodeScreen() {
             ) : (
               <View style={styles.countdownRow}>
                 <MaterialCommunityIcons name="timer-off-outline" size={18} color={colors.error} />
-                <Text style={styles.countdownExpired}>Code expire</Text>
+                <Text style={styles.countdownExpired}>Code expiré</Text>
               </View>
             )}
           </View>
@@ -207,14 +207,14 @@ export function VerifyCodeScreen() {
               {isLoading ? (
                 <ActivityIndicator color={colors.surface} />
               ) : (
-                <Text style={styles.buttonText}>Verifier</Text>
+                <Text style={styles.buttonText}>Vérifier</Text>
               )}
             </TouchableOpacity>
           )}
 
           {/* Resend code */}
           <View style={styles.resendContainer}>
-            <Text style={styles.resendLabel}>Vous n'avez pas recu le code ?</Text>
+            <Text style={styles.resendLabel}>Vous n'avez pas reçu le code ?</Text>
             {codeExpired || countdown <= 0 ? (
               <TouchableOpacity onPress={handleResendCode} disabled={isResending}>
                 {isResending ? (

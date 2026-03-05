@@ -6,11 +6,13 @@ import {HomeNavigator} from './HomeNavigator';
 import {SubscriptionsNavigator} from './SubscriptionsNavigator';
 import {ProfileNavigator} from './ProfileNavigator';
 import {RequestNavigator} from './RequestNavigator';
+import {TreasuryNavigator} from './TreasuryNavigator';
 import {colors} from '../theme';
 
 export type RootTabParamList = {
   Home: undefined;
   Subscriptions: undefined;
+  Treasury: undefined;
   Requests: undefined;
   Profile: undefined;
 };
@@ -60,10 +62,20 @@ export function AppNavigator() {
         }}
       />
       <Tab.Screen
+        name="Treasury"
+        component={TreasuryNavigator}
+        options={{
+          tabBarLabel: 'Don',
+          tabBarIcon: ({color, size}) => (
+            <MaterialCommunityIcons name="treasure-chest" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
         name="Requests"
         component={RequestNavigator}
         options={{
-          tabBarLabel: 'Creer',
+          tabBarLabel: 'Créer',
           tabBarIcon: ({color, size}) => (
             <MaterialCommunityIcons name="plus-circle" size={size} color={color} />
           ),

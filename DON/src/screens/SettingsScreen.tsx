@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, ScrollView, Alert, ActivityIndicator, TouchableOpacity} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
@@ -7,6 +7,7 @@ import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {MenuItem} from '../components/MenuItem';
 import {useAuth} from '../providers';
 import {profileService} from '../services/profile';
+import {isCurrentUserAdmin} from '../services/admin';
 import {colors, spacing, typography} from '../theme';
 import type {ProfileStackParamList} from '../navigation/ProfileNavigator';
 
@@ -16,21 +17,26 @@ export function SettingsScreen() {
   const navigation = useNavigation<SettingsScreenNavigationProp>();
   const {signOut, deleteAccount} = useAuth();
   const [loggingOut, setLoggingOut] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    isCurrentUserAdmin().then(setIsAdmin);
+  }, []);
 
   const handleSignOut = async () => {
     Alert.alert(
-      'Se deconnecter',
-      'Voulez-vous vraiment vous deconnecter ?',
+      'Se déconnecter',
+      'Voulez-vous vraiment vous déconnecter ?',
       [
         {text: 'Annuler', style: 'cancel'},
         {
-          text: 'Deconnecter',
+          text: 'Déconnecter',
           onPress: async () => {
             setLoggingOut(true);
             try {
               await signOut();
             } catch {
-              Alert.alert('Erreur', 'Impossible de se deconnecter.');
+              Alert.alert('Erreur', 'Impossible de se déconnecter.');
             } finally {
               setLoggingOut(false);
             }
@@ -43,7 +49,7 @@ export function SettingsScreen() {
   const handleDeleteAccount = () => {
     Alert.alert(
       'Supprimer le compte',
-      'Cette action est irreversible. Votre compte et toutes vos donnees seront supprimes.',
+      'Cette action est irréversible. Votre compte et toutes vos données seront supprimés.',
       [
         {text: 'Annuler', style: 'cancel'},
         {
@@ -72,7 +78,7 @@ export function SettingsScreen() {
           activeOpacity={0.7}>
           <MaterialCommunityIcons name="arrow-left" size={24} color={colors.text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Parametres</Text>
+        <Text style={styles.headerTitle}>Paramètres</Text>
         <View style={styles.headerSpacer} />
       </View>
 
@@ -93,31 +99,35 @@ export function SettingsScreen() {
           />
         </View>
 
-        {/* Administration */}
-        <Text style={styles.sectionTitle}>Administration</Text>
-        <View style={styles.menuSection}>
-          <MenuItem
-            icon="shield-check"
-            label="Moderation"
-            subtitle="Gerer les demandes en attente"
-            onPress={() => navigation.navigate('Admin')}
-            iconColor={colors.warning}
-          />
-        </View>
+        {/* Administration - visible uniquement pour les admins */}
+        {isAdmin && (
+          <>
+            <Text style={styles.sectionTitle}>Administration</Text>
+            <View style={styles.menuSection}>
+              <MenuItem
+                icon="shield-check"
+                label="Modération"
+                subtitle="Gérer les demandes en attente"
+                onPress={() => navigation.navigate('Admin')}
+                iconColor={colors.warning}
+              />
+            </View>
+          </>
+        )}
 
         {/* Informations */}
         <Text style={styles.sectionTitle}>Informations</Text>
         <View style={styles.menuSection}>
           <MenuItem
             icon="information"
-            label="A propos"
-            subtitle="Comment ca marche"
+            label="À propos"
+            subtitle="Comment ça marche"
             onPress={() => navigation.navigate('About')}
           />
           <MenuItem
             icon="file-document"
-            label="Mentions legales"
-            subtitle="Confidentialite et CGU"
+            label="Mentions légales"
+            subtitle="Confidentialité et CGU"
             onPress={() => navigation.navigate('Legal')}
           />
         </View>
@@ -127,7 +137,7 @@ export function SettingsScreen() {
         <View style={styles.menuSection}>
           <MenuItem
             icon="logout"
-            label="Se deconnecter"
+            label="Se déconnecter"
             onPress={handleSignOut}
             showArrow={false}
             iconColor={colors.warning}
@@ -144,7 +154,7 @@ export function SettingsScreen() {
         {/* Footer */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>ZaKaT v1.0.0</Text>
-          <Text style={styles.footerSubtext}>Application de demonstration</Text>
+          <Text style={styles.footerSubtext}>Application de démonstration</Text>
         </View>
 
         {/* Loading overlay for logout */}

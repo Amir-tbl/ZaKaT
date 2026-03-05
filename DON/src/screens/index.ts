@@ -16,6 +16,8 @@ export {PdfViewerScreen} from './PdfViewerScreen';
 export {AdminScreen} from './AdminScreen';
 export {OrganizationProfileScreen} from './OrganizationProfileScreen';
 export {DonateScreen} from './DonateScreen';
+export {TreasuryScreen} from './TreasuryScreen';
+export {SearchScreen} from './SearchScreen';
 export {SubscriptionsScreen} from './SubscriptionsScreen';
 export {NotificationsScreen} from './NotificationsScreen';
 export {FollowersScreen} from './FollowersScreen';

@@ -240,6 +240,23 @@ service cloud.firestore {
     }
 
     // ============================================
+    // WITHDRAWALS COLLECTION
+    // ============================================
+    match /withdrawals/{userId} {
+      // Users can read their own withdrawal data
+      allow read: if isOwner(userId);
+
+      // Users can create their own withdrawal doc
+      allow create: if isOwner(userId);
+
+      // Users can update their own withdrawal doc
+      allow update: if isOwner(userId);
+
+      // Only admins can delete
+      allow delete: if isAdmin();
+    }
+
+    // ============================================
     // PASSWORD RESET CODES (managed by Cloud Functions only)
     // ============================================
     match /passwordResetCodes/{codeId} {

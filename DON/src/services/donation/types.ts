@@ -25,3 +25,15 @@ export interface TreasuryStats {
   totalAmountCents: number;
   donationCount: number;
 }
+
+export interface ZakatSubscription {
+  stripeSubscriptionId: string;
+  stripeCustomerId: string;
+  status: 'active' | 'canceled' | 'past_due' | 'incomplete';
+  amountCents: number;
+  currency: string;
+  currentPeriodEnd: number;
+  cancelAtPeriodEnd: boolean;
+  createdAt: number;
+  updatedAt: number;
+}

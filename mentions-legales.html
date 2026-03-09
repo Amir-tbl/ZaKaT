@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mentions Légales - Zakat</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --primary: #0EA5A4;
+      --primary-dark: #0B7A7A;
+      --primary-light: rgba(14, 165, 164, 0.1);
+      --accent: #3B82F6;
+      --bg: #F6FAFB;
+      --surface: #FFFFFF;
+      --text: #0F172A;
+      --muted: #64748B;
+      --success: #22C55E;
+      --warning: #F59E0B;
+      --error: #EF4444;
+      --border: #E2E8F0;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; height: auto; }
+
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* === Navbar === */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      transition: box-shadow 0.3s;
+    }
+
+    .navbar.scrolled {
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    .navbar .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .navbar-brand img {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+    }
+
+    .navbar-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .navbar-links a {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+
+    .navbar-links a:hover {
+      color: var(--primary);
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 26px;
+      height: 3px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: 0.3s;
+    }
+
+    /* === Page Header === */
+    .page-header {
+      padding: 140px 0 60px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-header::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      right: -200px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(14, 165, 164, 0.08) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .page-header .container {
+      position: relative;
+      z-index: 1;
+    }
+
+    .page-header .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .page-header .breadcrumb a {
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    .page-header .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    .page-header h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    .page-header h1 .highlight {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .page-header .subtitle {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 600px;
+    }
+
+    .last-updated {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 16px;
+      padding: 6px 14px;
+      background: var(--primary-light);
+      border: 1px solid rgba(14, 165, 164, 0.2);
+      border-radius: 50px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+
+    /* === Content === */
+    .policy-content {
+      padding: 80px 0;
+    }
+
+    .policy-layout {
+      display: flex;
+      gap: 48px;
+      align-items: flex-start;
+    }
+
+    /* Table of contents */
+    .policy-nav {
+      flex: 0 0 260px;
+      position: sticky;
+      top: 96px;
+    }
+
+    .policy-nav-inner {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .policy-nav h4 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .policy-nav ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .policy-nav a {
+      display: block;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--muted);
+      transition: all 0.2s;
+    }
+
+    .policy-nav a:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    /* Articles */
+    .policy-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .policy-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px;
+      margin-bottom: 28px;
+      transition: box-shadow 0.3s;
+    }
+
+    .policy-section:hover {
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+    }
+
+    .policy-section h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .policy-section h2 .section-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .policy-section h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-top: 24px;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+
+    .policy-section p {
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 14px;
+    }
+
+    .policy-section ul {
+      list-style: none;
+      margin-bottom: 14px;
+    }
+
+    .policy-section ul li {
+      position: relative;
+      padding-left: 24px;
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 6px;
+    }
+
+    .policy-section ul li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 11px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--primary);
+      opacity: 0.6;
+    }
+
+    .highlight-box {
+      background: var(--primary-light);
+      border: 1px solid rgba(14, 165, 164, 0.2);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin: 20px 0;
+    }
+
+    .highlight-box p {
+      color: var(--primary-dark);
+      font-weight: 500;
+      margin-bottom: 0;
+    }
+
+    .highlight-box strong {
+      color: var(--primary-dark);
+    }
+
+    .warning-box {
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin: 20px 0;
+    }
+
+    .warning-box p {
+      color: #92400E;
+      font-weight: 500;
+      margin-bottom: 0;
+    }
+
+    .info-box {
+      background: rgba(59, 130, 246, 0.06);
+      border: 1px solid rgba(59, 130, 246, 0.15);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin: 20px 0;
+    }
+
+    .info-box p {
+      color: #1E40AF;
+      font-weight: 500;
+      margin-bottom: 0;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 0.9rem;
+    }
+
+    .data-table th,
+    .data-table td {
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .data-table th {
+      background: var(--bg);
+      font-weight: 600;
+      color: var(--text);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .data-table td {
+      color: var(--muted);
+    }
+
+    /* === Footer === */
+    .footer {
+      background: var(--text);
+      color: rgba(255, 255, 255, 0.6);
+      padding: 60px 0 32px;
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 48px;
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 12px;
+    }
+
+    .footer-brand img {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+    }
+
+    .footer-desc {
+      max-width: 300px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .footer-links h4 {
+      color: white;
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .footer-links ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer-links a {
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--primary);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+    }
+
+    /* === Responsive === */
+    @media (max-width: 1024px) {
+      .policy-nav { display: none; }
+      .page-header h1 { font-size: 2.2rem; }
+    }
+
+    @media (max-width: 768px) {
+      .hamburger { display: flex; }
+
+      .navbar-links {
+        display: none;
+        position: absolute;
+        top: 72px;
+        left: 0;
+        right: 0;
+        background: var(--surface);
+        flex-direction: column;
+        padding: 24px;
+        gap: 20px;
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      }
+
+      .navbar-links.open { display: flex; }
+
+      .page-header { padding: 120px 0 40px; }
+      .page-header h1 { font-size: 1.8rem; }
+
+      .policy-section { padding: 28px 20px; }
+
+      .footer-content { flex-direction: column; gap: 32px; }
+      .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+
+      .data-table { font-size: 0.8rem; }
+      .data-table th, .data-table td { padding: 8px 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-brand">
+        <img src="ima/Logo.png" alt="Zakat">
+        Zakat
+      </a>
+      <ul class="navbar-links" id="navLinks">
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="index.html#fonctionnalites">Fonctionnalites</a></li>
+        <li><a href="index.html#comment-ca-marche">Comment ca marche</a></li>
+        <li><a href="index.html#telecharger">Telecharger</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="index.html">Accueil</a>
+        <span>&#8250;</span>
+        <span>Mentions legales</span>
+      </div>
+      <h1>Mentions <span class="highlight">Legales</span></h1>
+      <p class="subtitle">
+        Conformement a la Loi n° 2004-575 du 21 juin 2004 pour la confiance dans l'economie numerique (LCEN).
+      </p>
+      <div class="last-updated">&#128197; Derniere mise a jour : 9 mars 2026</div>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <main class="policy-content">
+    <div class="container">
+      <div class="policy-layout">
+
+        <!-- Table of contents -->
+        <aside class="policy-nav">
+          <div class="policy-nav-inner">
+            <h4>Sommaire</h4>
+            <ul>
+              <li><a href="#editeur">Editeur</a></li>
+              <li><a href="#hebergeur">Hebergeur</a></li>
+              <li><a href="#objet">Objet de l'application</a></li>
+              <li><a href="#propriete-intellectuelle">Propriete intellectuelle</a></li>
+              <li><a href="#responsabilite">Limitation de responsabilite</a></li>
+              <li><a href="#donnees-personnelles">Donnees personnelles</a></li>
+              <li><a href="#cookies">Cookies</a></li>
+              <li><a href="#droit-applicable">Droit applicable</a></li>
+              <li><a href="#credits">Credits</a></li>
+            </ul>
+          </div>
+        </aside>
+
+        <!-- Articles -->
+        <div class="policy-body">
+
+          <!-- 1. Editeur -->
+          <section class="policy-section" id="editeur">
+            <h2>
+              <span class="section-icon" style="background: var(--primary-light); color: var(--primary);">&#127970;</span>
+              1. Editeur
+            </h2>
+            <p>
+              Le present site et l'application mobile ZaKaT sont edites par :
+            </p>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Information</th>
+                  <th>Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Raison sociale</td>
+                  <td><strong>FOODTRUCKVIEWS</strong></td>
+                </tr>
+                <tr>
+                  <td>Forme juridique</td>
+                  <td>[A COMPLETER]</td>
+                </tr>
+                <tr>
+                  <td>Capital social</td>
+                  <td>[A COMPLETER] euros</td>
+                </tr>
+                <tr>
+                  <td>Siege social</td>
+                  <td>25 Quai du President Paul Doumer, 92400 Courbevoie, France</td>
+                </tr>
+                <tr>
+                  <td>SIRET</td>
+                  <td>[A COMPLETER]</td>
+                </tr>
+                <tr>
+                  <td>RCS</td>
+                  <td>[A COMPLETER] RCS Nanterre</td>
+                </tr>
+                <tr>
+                  <td>N° TVA intracommunautaire</td>
+                  <td>[A COMPLETER]</td>
+                </tr>
+                <tr>
+                  <td>Directeur de la publication</td>
+                  <td>[A COMPLETER]</td>
+                </tr>
+                <tr>
+                  <td>Contact</td>
+                  <td>contact@zakat-app.com</td>
+                </tr>
+                <tr>
+                  <td>Telephone</td>
+                  <td>[A COMPLETER]</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <!-- 2. Hebergeur -->
+          <section class="policy-section" id="hebergeur">
+            <h2>
+              <span class="section-icon" style="background: rgba(59, 130, 246, 0.1); color: var(--accent);">&#9729;</span>
+              2. Hebergeur
+            </h2>
+            <p>
+              Le site internet est heberge par :
+            </p>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Information</th>
+                  <th>Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Raison sociale</td>
+                  <td><strong>OVHcloud SAS</strong></td>
+                </tr>
+                <tr>
+                  <td>Siege social</td>
+                  <td>2 rue Kellermann, 59100 Roubaix, France</td>
+                </tr>
+                <tr>
+                  <td>Telephone</td>
+                  <td>1007</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="info-box">
+              <p>&#128712; Les donnees de l'application mobile sont hebergees sur Firebase / Google Cloud Platform (Google LLC). Les transferts de donnees hors de l'Union europeenne sont encadres par les Clauses Contractuelles Types (CCT) approuvees par la Commission europeenne, conformement aux exigences du RGPD.</p>
+            </div>
+          </section>
+
+          <!-- 3. Objet de l'application -->
+          <section class="policy-section" id="objet">
+            <h2>
+              <span class="section-icon" style="background: rgba(34, 197, 94, 0.1); color: var(--success);">&#128161;</span>
+              3. Objet de l'application
+            </h2>
+            <p>
+              L'application <strong>ZaKaT</strong> est une plateforme numerique dediee aux dons solidaires. Elle a pour vocation de faciliter la collecte de la Zakat et sa distribution equitable au sein de la communaute.
+            </p>
+            <p>
+              ZaKaT permet aux utilisateurs d'effectuer des dons en ligne, de suivre l'utilisation de leurs contributions et de garantir une repartition transparente et juste des fonds collectes aupres des beneficiaires identifies.
+            </p>
+            <div class="highlight-box">
+              <p>&#9989; <strong>ZaKaT s'inscrit dans une demarche de solidarite, de transparence et de confiance numerique au service de la communaute.</strong></p>
+            </div>
+          </section>
+
+          <!-- 4. Propriete intellectuelle -->
+          <section class="policy-section" id="propriete-intellectuelle">
+            <h2>
+              <span class="section-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--warning);">&#169;</span>
+              4. Propriete intellectuelle
+            </h2>
+            <p>
+              L'ensemble du contenu du site et de l'application ZaKaT (textes, images, graphismes, logos, icones, sons, logiciels, base de donnees, architecture, code source) est protege par les dispositions du Code de la propriete intellectuelle et par les conventions internationales relatives a la propriete intellectuelle.
+            </p>
+            <p>
+              La marque <strong>ZaKaT</strong> ainsi que l'ensemble des logos et signes distinctifs figurant sur le site et l'application sont la propriete exclusive de FOODTRUCKVIEWS. Toute reproduction, representation, modification, publication, adaptation de tout ou partie des elements du site ou de l'application, quel que soit le moyen ou le procede utilise, est interdite sans l'autorisation ecrite prealable de FOODTRUCKVIEWS.
+            </p>
+            <div class="warning-box">
+              <p>&#9888;&#65039; Toute exploitation non autorisee du site, de l'application ou de l'un quelconque des elements qu'ils contiennent sera consideree comme constitutive d'une contrefacon et poursuivie conformement aux articles L.335-2 et suivants du Code de la propriete intellectuelle.</p>
+            </div>
+          </section>
+
+          <!-- 5. Limitation de responsabilite -->
+          <section class="policy-section" id="responsabilite">
+            <h2>
+              <span class="section-icon" style="background: rgba(239, 68, 68, 0.1); color: var(--error);">&#128737;</span>
+              5. Limitation de responsabilite
+            </h2>
+            <p>
+              FOODTRUCKVIEWS s'efforce de fournir sur le site et l'application des informations aussi precises que possible. Toutefois, FOODTRUCKVIEWS ne pourra etre tenue responsable des omissions, des inexactitudes et des carences dans la mise a jour, qu'elles soient de son fait ou du fait des tiers partenaires qui lui fournissent ces informations.
+            </p>
+            <p>
+              FOODTRUCKVIEWS decline toute responsabilite en cas de :
+            </p>
+            <ul>
+              <li><strong>Inexactitudes ou omissions :</strong> concernant les informations disponibles sur le site ou l'application.</li>
+              <li><strong>Intrusion de tiers :</strong> toute intrusion non autorisee dans le systeme d'information malgre les mesures de securite mises en place.</li>
+              <li><strong>Dommages directs ou indirects :</strong> resultant de l'acces ou de l'impossibilite d'acceder au site ou a l'application, de l'utilisation du site ou de l'application, y compris tout dommage ou virus qui pourrait infecter l'equipement informatique de l'utilisateur.</li>
+              <li><strong>Force majeure :</strong> tout evenement de force majeure au sens de l'article 1218 du Code civil.</li>
+            </ul>
+            <p>
+              Les liens hypertextes mis en place dans le cadre du site ou de l'application en direction d'autres ressources presentes sur le reseau Internet ne sauraient engager la responsabilite de FOODTRUCKVIEWS.
+            </p>
+          </section>
+
+          <!-- 6. Donnees personnelles -->
+          <section class="policy-section" id="donnees-personnelles">
+            <h2>
+              <span class="section-icon" style="background: var(--primary-light); color: var(--primary);">&#128274;</span>
+              6. Donnees personnelles
+            </h2>
+            <p>
+              Conformement a la Loi n° 78-17 du 6 janvier 1978 relative a l'informatique, aux fichiers et aux libertes, dite loi "Informatique et Libertes", et au Reglement General sur la Protection des Donnees (RGPD - Reglement UE 2016/679), l'utilisateur dispose d'un droit d'acces, de rectification, de suppression, de portabilite, de limitation et d'opposition concernant ses donnees personnelles.
+            </p>
+            <p>
+              Pour en savoir plus sur la maniere dont nous collectons, utilisons et protegeons vos donnees personnelles, nous vous invitons a consulter notre <a href="confidentialite.html" style="color: var(--primary); font-weight: 600; text-decoration: underline;">Politique de Confidentialite</a>.
+            </p>
+
+            <h3>6.1 Exercice de vos droits</h3>
+            <p>
+              Pour exercer vos droits relatifs a vos donnees personnelles, vous pouvez nous contacter :
+            </p>
+            <ul>
+              <li><strong>Par e-mail :</strong> contact@zakat-app.com</li>
+              <li><strong>Par courrier :</strong> FOODTRUCKVIEWS - 25 Quai du President Paul Doumer, 92400 Courbevoie, France</li>
+            </ul>
+            <p>
+              Nous nous engageons a repondre a votre demande dans un delai maximum de 30 jours.
+            </p>
+
+            <h3>6.2 Reclamation aupres de la CNIL</h3>
+            <p>
+              En cas de difficulte dans la gestion de vos donnees personnelles, vous avez le droit d'introduire une reclamation aupres de la Commission Nationale de l'Informatique et des Libertes (CNIL) :
+            </p>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Information</th>
+                  <th>Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Adresse</td>
+                  <td>3 Place de Fontenoy, TSA 80715, 75334 Paris Cedex 07</td>
+                </tr>
+                <tr>
+                  <td>Telephone</td>
+                  <td>01 53 73 22 22</td>
+                </tr>
+                <tr>
+                  <td>Site internet</td>
+                  <td><a href="https://www.cnil.fr" target="_blank" rel="noopener noreferrer" style="color: var(--primary); font-weight: 600;">www.cnil.fr</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <!-- 7. Cookies -->
+          <section class="policy-section" id="cookies">
+            <h2>
+              <span class="section-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--warning);">&#127850;</span>
+              7. Cookies
+            </h2>
+            <p>
+              Le site internet de ZaKaT est susceptible d'utiliser des cookies et des technologies similaires. Un cookie est un petit fichier texte depose sur votre terminal (ordinateur, tablette, smartphone) lors de la visite d'un site web.
+            </p>
+            <p>
+              Conformement aux recommandations de la CNIL et aux dispositions de la directive europeenne 2002/58/CE, le consentement de l'utilisateur est recueilli avant le depot de tout cookie non essentiel au fonctionnement du site.
+            </p>
+            <p>
+              Pour en savoir plus sur notre utilisation des cookies et gerer vos preferences, consultez notre <a href="cookies.html" style="color: var(--primary); font-weight: 600; text-decoration: underline;">Politique de Cookies</a>.
+            </p>
+            <div class="info-box">
+              <p>&#128712; Vous pouvez a tout moment modifier vos preferences en matiere de cookies via les parametres de votre navigateur ou via le bandeau de gestion des cookies present sur notre site.</p>
+            </div>
+          </section>
+
+          <!-- 8. Droit applicable et juridiction -->
+          <section class="policy-section" id="droit-applicable">
+            <h2>
+              <span class="section-icon" style="background: rgba(59, 130, 246, 0.1); color: var(--accent);">&#9878;</span>
+              8. Droit applicable et juridiction
+            </h2>
+            <p>
+              Les presentes mentions legales sont regies par le droit francais. En cas de litige, et apres tentative de recherche d'une solution amiable, competence est attribuee aux tribunaux francais competents.
+            </p>
+
+            <h3>8.1 Mediation de la consommation</h3>
+            <p>
+              Conformement aux articles L.611-1 et suivants du Code de la consommation, tout consommateur a le droit de recourir gratuitement a un mediateur de la consommation en vue de la resolution amiable du litige qui l'oppose a un professionnel.
+            </p>
+            <p>
+              Mediateur competent : <strong>[A COMPLETER]</strong>
+            </p>
+
+            <h3>8.2 Reglement en ligne des litiges</h3>
+            <p>
+              Conformement au Reglement europeen n° 524/2013, la Commission europeenne met a disposition une plateforme de reglement en ligne des litiges accessible a l'adresse suivante :
+            </p>
+            <div class="highlight-box">
+              <p>&#128279; <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer" style="color: var(--primary-dark); text-decoration: underline;"><strong>https://ec.europa.eu/consumers/odr</strong></a></p>
+            </div>
+          </section>
+
+          <!-- 9. Credits -->
+          <section class="policy-section" id="credits">
+            <h2>
+              <span class="section-icon" style="background: rgba(34, 197, 94, 0.1); color: var(--success);">&#127912;</span>
+              9. Credits
+            </h2>
+            <p>
+              Conception et developpement du site et de l'application ZaKaT :
+            </p>
+            <div class="highlight-box">
+              <p>&#128736; <strong>FOODTRUCKVIEWS</strong> - 25 Quai du President Paul Doumer, 92400 Courbevoie, France</p>
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <div class="footer-brand">
+            <img src="ima/Logo.png" alt="Zakat">
+            Zakat
+          </div>
+          <p class="footer-desc">
+            Application de gestion de dons solidaires. Simplifiez la collecte et la distribution de la Zakat.
+          </p>
+        </div>
+        <div class="footer-links">
+          <h4>Application</h4>
+          <ul>
+            <li><a href="index.html#fonctionnalites">Fonctionnalites</a></li>
+            <li><a href="index.html#comment-ca-marche">Comment ca marche</a></li>
+            <li><a href="index.html#tech">Technologies</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Ressources</h4>
+          <ul>
+            <li><a href="#">Documentation</a></li>
+            <li><a href="#">Support</a></li>
+            <li><a href="confidentialite.html">Confidentialite</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="mentions-legales.html">Mentions legales</a></li>
+            <li><a href="cgu.html">CGU</a></li>
+            <li><a href="cookies.html">Cookies</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Zakat. Tous droits reserves.</span>
+        <span>Fait avec &#x2764;&#xFE0F; pour la communaute</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Navbar scroll effect
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 20);
+    });
+
+    // Hamburger menu
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('navLinks');
+    hamburger.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+
+    // Close menu on link click
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => navLinks.classList.remove('open'));
+    });
+  </script>
+
+</body>
+</html>

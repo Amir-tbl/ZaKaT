@@ -264,6 +264,16 @@ service cloud.firestore {
     }
 
     // ============================================
+    // SUBSCRIPTIONS COLLECTION
+    // ============================================
+    match /subscriptions/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId);
+      allow delete: if isAdmin();
+    }
+
+    // ============================================
     // REPORTS COLLECTION
     // ============================================
     match /reports/{reportId} {

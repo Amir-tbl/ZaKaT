@@ -4,6 +4,8 @@ import {
   addDoc,
   getDoc,
   getDocs,
+  setDoc,
+  updateDoc,
   query,
   where,
   orderBy,
@@ -11,7 +13,7 @@ import {
   Timestamp,
 } from 'firebase/firestore';
 import {db, auth} from '../../lib/firebase';
-import {Donation, CreateDonationInput, TreasuryStats} from './types';
+import {Donation, CreateDonationInput, TreasuryStats, ZakatSubscription} from './types';
 import {profileService, isIndividualProfile, isOrganizationProfile} from '../profile';
 
 const DONATIONS_COLLECTION = 'donations';
@@ -180,6 +182,59 @@ class DonationService {
     // Treasury updates are done via Cloud Functions
     // Just return the current stats
     return this.getTreasuryStats();
+  }
+
+  // ========== SUBSCRIPTIONS ==========
+
+  async getMySubscription(): Promise<ZakatSubscription | null> {
+    const currentUser = auth.currentUser;
+    if (!currentUser) return null;
+
+    try {
+      const docRef = doc(db, 'subscriptions', currentUser.uid);
+      const docSnap = await getDoc(docRef);
+      if (!docSnap.exists()) return null;
+
+      const data = docSnap.data();
+      return {
+        stripeSubscriptionId: data.stripeSubscriptionId,
+        stripeCustomerId: data.stripeCustomerId,
+        status: data.status,
+        amountCents: data.amountCents,
+        currency: data.currency || 'eur',
+        currentPeriodEnd: data.currentPeriodEnd,
+        cancelAtPeriodEnd: data.cancelAtPeriodEnd || false,
+        createdAt: data.createdAt instanceof Timestamp ? data.createdAt.toMillis() : data.createdAt || Date.now(),
+        updatedAt: data.updatedAt instanceof Timestamp ? data.updatedAt.toMillis() : data.updatedAt || Date.now(),
+      };
+    } catch (error) {
+      console.error('Error getting subscription:', error);
+      return null;
+    }
+  }
+
+  async saveSubscription(sub: Partial<ZakatSubscription>): Promise<void> {
+    const currentUser = auth.currentUser;
+    if (!currentUser) throw new Error('User must be authenticated');
+
+    const docRef = doc(db, 'subscriptions', currentUser.uid);
+    await setDoc(docRef, {
+      ...sub,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    }, {merge: true});
+  }
+
+  async updateSubscriptionStatus(status: ZakatSubscription['status'], cancelAtPeriodEnd: boolean): Promise<void> {
+    const currentUser = auth.currentUser;
+    if (!currentUser) throw new Error('User must be authenticated');
+
+    const docRef = doc(db, 'subscriptions', currentUser.uid);
+    await updateDoc(docRef, {
+      status,
+      cancelAtPeriodEnd,
+      updatedAt: serverTimestamp(),
+    });
   }
 
   // ========== HELPERS ==========

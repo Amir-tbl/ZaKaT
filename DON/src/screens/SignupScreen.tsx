@@ -916,11 +916,6 @@ export function SignupScreen() {
               <>
                 <MaterialCommunityIcons name="google" size={20} color={colors.text} />
                 <Text style={styles.googleButtonText}>Continuer avec Google</Text>
-                {!googleConfigured && (
-                  <View style={styles.comingSoonBadge}>
-                    <Text style={styles.comingSoonText}>Config</Text>
-                  </View>
-                )}
               </>
             )}
           </TouchableOpacity>

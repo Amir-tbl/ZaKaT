@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conditions Generales d'Utilisation - Zakat</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --primary: #0EA5A4;
+      --primary-dark: #0B7A7A;
+      --primary-light: rgba(14, 165, 164, 0.1);
+      --accent: #3B82F6;
+      --bg: #F6FAFB;
+      --surface: #FFFFFF;
+      --text: #0F172A;
+      --muted: #64748B;
+      --success: #22C55E;
+      --warning: #F59E0B;
+      --error: #EF4444;
+      --border: #E2E8F0;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; height: auto; }
+
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* === Navbar === */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      transition: box-shadow 0.3s;
+    }
+
+    .navbar.scrolled {
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    .navbar .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .navbar-brand img {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+    }
+
+    .navbar-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .navbar-links a {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+
+    .navbar-links a:hover {
+      color: var(--primary);
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 26px;
+      height: 3px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: 0.3s;
+    }
+
+    /* === Page Header === */
+    .page-header {
+      padding: 140px 0 60px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-header::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      right: -200px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(14, 165, 164, 0.08) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .page-header .container {
+      position: relative;
+      z-index: 1;
+    }
+
+    .page-header .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .page-header .breadcrumb a {
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    .page-header .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    .page-header h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    .page-header h1 .highlight {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .page-header .subtitle {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 600px;
+    }
+
+    .last-updated {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 16px;
+      padding: 6px 14px;
+      background: var(--primary-light);
+      border: 1px solid rgba(14, 165, 164, 0.2);
+      border-radius: 50px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+
+    /* === Content === */
+    .policy-content {
+      padding: 80px 0;
+    }
+
+    .policy-layout {
+      display: flex;
+      gap: 48px;
+      align-items: flex-start;
+    }
+
+    /* Table of contents */
+    .policy-nav {
+      flex: 0 0 260px;
+      position: sticky;
+      top: 96px;
+    }
+
+    .policy-nav-inner {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .policy-nav h4 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .policy-nav ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .policy-nav a {
+      display: block;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--muted);
+      transition: all 0.2s;
+    }
+
+    .policy-nav a:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    /* Articles */
+    .policy-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .policy-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px;
+      margin-bottom: 28px;
+      transition: box-shadow 0.3s;
+    }
+
+    .policy-section:hover {
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+    }
+
+    .policy-section h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .policy-section h2 .section-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .policy-section h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-top: 24px;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+
+    .policy-section p {
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 14px;
+    }
+
+    .policy-section ul {
+      list-style: none;
+      margin-bottom: 14px;
+    }
+
+    .policy-section ul li {
+      position: relative;
+      padding-left: 24px;
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 6px;
+    }
+
+    .policy-section ul li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 11px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--primary);
+      opacity: 0.6;
+    }
+
+    .highlight-box {
+      background: var(--primary-light);
+      border: 1px solid rgba(14, 165, 164, 0.2);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin: 20px 0;
+    }
+
+    .highlight-box p {
+      color: var(--primary-dark);
+      font-weight: 500;
+      margin-bottom: 0;
+    }
+
+    .highlight-box strong {
+      color: var(--primary-dark);
+    }
+
+    .warning-box {
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin: 20px 0;
+    }
+
+    .warning-box p {
+      color: #92400E;
+      font-weight: 500;
+      margin-bottom: 0;
+    }
+
+    .info-box {
+      background: rgba(59, 130, 246, 0.06);
+      border: 1px solid rgba(59, 130, 246, 0.15);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin: 20px 0;
+    }
+
+    .info-box p {
+      color: #1E40AF;
+      font-weight: 500;
+      margin-bottom: 0;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 0.9rem;
+    }
+
+    .data-table th,
+    .data-table td {
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .data-table th {
+      background: var(--bg);
+      font-weight: 600;
+      color: var(--text);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .data-table td {
+      color: var(--muted);
+    }
+
+    /* === Footer === */
+    .footer {
+      background: var(--text);
+      color: rgba(255, 255, 255, 0.6);
+      padding: 60px 0 32px;
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 48px;
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 12px;
+    }
+
+    .footer-brand img {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+    }
+
+    .footer-desc {
+      max-width: 300px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .footer-links h4 {
+      color: white;
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .footer-links ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer-links a {
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--primary);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+    }
+
+    /* === Responsive === */
+    @media (max-width: 1024px) {
+      .policy-nav { display: none; }
+      .page-header h1 { font-size: 2.2rem; }
+    }
+
+    @media (max-width: 768px) {
+      .hamburger { display: flex; }
+
+      .navbar-links {
+        display: none;
+        position: absolute;
+        top: 72px;
+        left: 0;
+        right: 0;
+        background: var(--surface);
+        flex-direction: column;
+        padding: 24px;
+        gap: 20px;
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      }
+
+      .navbar-links.open { display: flex; }
+
+      .page-header { padding: 120px 0 40px; }
+      .page-header h1 { font-size: 1.8rem; }
+
+      .policy-section { padding: 28px 20px; }
+
+      .footer-content { flex-direction: column; gap: 32px; }
+      .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+
+      .data-table { font-size: 0.8rem; }
+      .data-table th, .data-table td { padding: 8px 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-brand">
+        <img src="ima/Logo.png" alt="Zakat">
+        Zakat
+      </a>
+      <ul class="navbar-links" id="navLinks">
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="index.html#fonctionnalites">Fonctionnalites</a></li>
+        <li><a href="index.html#comment-ca-marche">Comment ca marche</a></li>
+        <li><a href="index.html#telecharger">Telecharger</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="index.html">Accueil</a>
+        <span>&#8250;</span>
+        <span>CGU</span>
+      </div>
+      <h1>Conditions Generales <span class="highlight">d'Utilisation</span></h1>
+      <p class="subtitle">
+        Les presentes CGU regissent l'utilisation de l'application ZaKaT et des services associes.
+      </p>
+      <div class="last-updated">&#128197; Derniere mise a jour : 9 mars 2026</div>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <main class="policy-content">
+    <div class="container">
+      <div class="policy-layout">
+
+        <!-- Table of contents -->
+        <aside class="policy-nav">
+          <div class="policy-nav-inner">
+            <h4>Sommaire</h4>
+            <ul>
+              <li><a href="#preambule">Preambule</a></li>
+              <li><a href="#definitions">Art. 1 — Definitions</a></li>
+              <li><a href="#objet">Art. 2 — Objet</a></li>
+              <li><a href="#acces">Art. 3 — Acces et inscription</a></li>
+              <li><a href="#utilisation">Art. 4 — Utilisation du service</a></li>
+              <li><a href="#dons">Art. 5 — Dons et transactions</a></li>
+              <li><a href="#demandes">Art. 6 — Demandes d'aide</a></li>
+              <li><a href="#propriete">Art. 7 — Propriete intellectuelle</a></li>
+              <li><a href="#contenus">Art. 8 — Contenus utilisateurs</a></li>
+              <li><a href="#responsabilite">Art. 9 — Responsabilite</a></li>
+              <li><a href="#disponibilite">Art. 10 — Disponibilite</a></li>
+              <li><a href="#suspension">Art. 11 — Suspension et resiliation</a></li>
+              <li><a href="#donnees">Art. 12 — Donnees personnelles</a></li>
+              <li><a href="#modifications">Art. 13 — Modification des CGU</a></li>
+              <li><a href="#droit-applicable">Art. 14 — Droit applicable</a></li>
+              <li><a href="#dispositions">Art. 15 — Dispositions diverses</a></li>
+              <li><a href="#contact">Art. 16 — Contact</a></li>
+            </ul>
+          </div>
+        </aside>
+
+        <!-- Articles -->
+        <div class="policy-body">
+
+          <!-- Preambule -->
+          <section class="policy-section" id="preambule">
+            <h2>
+              <span class="section-icon" style="background: var(--primary-light); color: var(--primary);">&#128196;</span>
+              Preambule
+            </h2>
+            <p>
+              Les presentes Conditions Generales d'Utilisation (ci-apres "CGU") definissent les modalites et conditions d'utilisation de l'application mobile <strong>ZaKaT</strong> (ci-apres "l'Application"), editee par la societe <strong>FOODTRUCKVIEWS</strong>, dont le siege social est situe au 25 Quai du President Paul Doumer, 92400 Courbevoie.
+            </p>
+            <p>
+              L'utilisation de l'Application implique l'acceptation pleine et entiere des presentes CGU. Tout Utilisateur qui accede a l'Application et utilise ses services reconnait avoir pris connaissance des presentes CGU et les accepte sans reserve.
+            </p>
+            <div class="info-box">
+              <p>&#128712; En cas de desaccord avec l'une quelconque des dispositions des presentes CGU, l'Utilisateur est invite a ne pas utiliser l'Application.</p>
+            </div>
+          </section>
+
+          <!-- Article 1 — Definitions -->
+          <section class="policy-section" id="definitions">
+            <h2>
+              <span class="section-icon" style="background: rgba(59, 130, 246, 0.1); color: var(--accent);">&#128214;</span>
+              Article 1 — Definitions
+            </h2>
+            <p>
+              Au sens des presentes CGU, les termes suivants ont la signification qui leur est attribuee ci-dessous :
+            </p>
+            <ul>
+              <li><strong>Application :</strong> l'application mobile ZaKaT, disponible sur iOS et Android, permettant la gestion de dons solidaires au titre de la Zakat.</li>
+              <li><strong>Utilisateur :</strong> toute personne physique accedant a l'Application et utilisant ses services, quel que soit son role.</li>
+              <li><strong>Donateur :</strong> Utilisateur qui effectue un ou plusieurs dons via l'Application.</li>
+              <li><strong>Demandeur :</strong> Utilisateur qui soumet une demande d'aide financiere via l'Application.</li>
+              <li><strong>Beneficiaire :</strong> Demandeur dont le dossier a ete valide par les Administrateurs et qui recoit une aide financiere.</li>
+              <li><strong>Administrateur :</strong> personne habilitee par l'Editeur a gerer l'Application, evaluer les demandes et superviser la distribution des fonds.</li>
+              <li><strong>Tresorerie :</strong> fonds collectes via l'Application et destines a etre distribues aux Beneficiaires valides.</li>
+              <li><strong>Services :</strong> l'ensemble des fonctionnalites proposees par l'Application, incluant la collecte de dons, la gestion des demandes et la distribution des fonds.</li>
+              <li><strong>Editeur :</strong> la societe FOODTRUCKVIEWS, editrice de l'Application ZaKaT.</li>
+            </ul>
+          </section>
+
+          <!-- Article 2 — Objet -->
+          <section class="policy-section" id="objet">
+            <h2>
+              <span class="section-icon" style="background: rgba(34, 197, 94, 0.1); color: var(--success);">&#127919;</span>
+              Article 2 — Objet
+            </h2>
+            <p>
+              Les presentes CGU ont pour objet de definir les conditions dans lesquelles les Utilisateurs peuvent acceder a l'Application ZaKaT et utiliser ses Services.
+            </p>
+            <p>
+              L'Application ZaKaT est une plateforme de gestion de dons solidaires qui permet :
+            </p>
+            <ul>
+              <li><strong>Aux Donateurs</strong> d'effectuer des dons au titre de la Zakat de maniere simple, securisee et transparente.</li>
+              <li><strong>Aux Demandeurs</strong> de soumettre des demandes d'aide financiere en fournissant les justificatifs necessaires.</li>
+              <li><strong>Aux Administrateurs</strong> de gerer les demandes, d'evaluer les dossiers et de superviser la distribution equitable des fonds collectes.</li>
+              <li><strong>A tous les Utilisateurs</strong> de beneficier d'une transparence totale sur la collecte et la distribution des dons.</li>
+            </ul>
+          </section>
+
+          <!-- Article 3 — Acces et inscription -->
+          <section class="policy-section" id="acces">
+            <h2>
+              <span class="section-icon" style="background: rgba(59, 130, 246, 0.1); color: var(--accent);">&#128272;</span>
+              Article 3 — Acces et inscription
+            </h2>
+
+            <h3>3.1 Conditions d'acces</h3>
+            <p>
+              L'Application est accessible gratuitement sur les plateformes iOS et Android. L'utilisation des Services necessite la creation prealable d'un compte utilisateur.
+            </p>
+
+            <h3>3.2 Capacite</h3>
+            <p>
+              L'utilisation de l'Application est reservee aux personnes physiques majeures (agees de 18 ans ou plus) disposant de la pleine capacite juridique. En creant un compte, l'Utilisateur declare et garantit remplir cette condition.
+            </p>
+
+            <h3>3.3 Creation de compte</h3>
+            <p>
+              Lors de la creation de son compte, l'Utilisateur s'engage a :
+            </p>
+            <ul>
+              <li>Fournir des informations exactes, completes et a jour.</li>
+              <li>Ne creer qu'un seul compte par personne physique.</li>
+              <li>Maintenir la confidentialite de ses identifiants de connexion (adresse e-mail et mot de passe).</li>
+              <li>Etre seul responsable de toute activite effectuee depuis son compte.</li>
+            </ul>
+            <div class="info-box">
+              <p>&#128712; L'Utilisateur doit informer immediatement l'Editeur de toute utilisation non autorisee de son compte ou de toute atteinte a la securite de ses identifiants.</p>
+            </div>
+          </section>
+
+          <!-- Article 4 — Utilisation du service -->
+          <section class="policy-section" id="utilisation">
+            <h2>
+              <span class="section-icon" style="background: rgba(34, 197, 94, 0.1); color: var(--success);">&#9881;</span>
+              Article 4 — Utilisation du service
+            </h2>
+
+            <h3>4.1 Obligations de l'Utilisateur</h3>
+            <p>
+              L'Utilisateur s'engage a utiliser l'Application de maniere conforme aux presentes CGU, aux lois et reglements en vigueur, ainsi qu'aux bonnes moeurs. A ce titre, l'Utilisateur s'engage notamment a :
+            </p>
+            <ul>
+              <li>Utiliser l'Application de maniere loyale et de bonne foi.</li>
+              <li>Fournir des informations veridiques et exactes.</li>
+              <li>Ne pas commettre d'actes frauduleux ou trompeurs.</li>
+              <li>Respecter les autres Utilisateurs et les Administrateurs.</li>
+              <li>Ne pas tenter de contourner les mesures de securite de l'Application.</li>
+            </ul>
+
+            <h3>4.2 Comportements interdits</h3>
+            <p>
+              Il est strictement interdit de :
+            </p>
+            <ul>
+              <li>Creer de faux profils ou usurper l'identite d'un tiers.</li>
+              <li>Soumettre des demandes d'aide frauduleuses ou fondees sur de fausses declarations.</li>
+              <li>Utiliser l'Application a des fins de blanchiment d'argent ou de financement d'activites illicites.</li>
+              <li>Diffuser des contenus haineux, discriminatoires, diffamatoires ou contraires a l'ordre public.</li>
+              <li>Tenter de pirater, desassembler ou alterer le fonctionnement de l'Application.</li>
+              <li>Utiliser des robots, scripts ou tout moyen automatise pour acceder a l'Application.</li>
+            </ul>
+            <div class="warning-box">
+              <p>&#9888;&#65039; Tout manquement aux presentes obligations pourra entrainer la suspension immediate et definitive du compte de l'Utilisateur, sans preavis ni indemnite.</p>
+            </div>
+          </section>
+
+          <!-- Article 5 — Dons et transactions -->
+          <section class="policy-section" id="dons">
+            <h2>
+              <span class="section-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--warning);">&#128176;</span>
+              Article 5 — Dons et transactions
+            </h2>
+
+            <h3>5.1 Nature des dons</h3>
+            <p>
+              Les dons effectues via l'Application sont volontaires et definitifs. Chaque don constitue un acte irrevocable de generosite au titre de la Zakat. Le Donateur reconnait que le montant verse ne pourra faire l'objet d'aucune demande de remboursement, sauf en cas d'erreur technique avere.
+            </p>
+
+            <h3>5.2 Commission</h3>
+            <div class="highlight-box">
+              <p>
+                &#9989; <strong>Pour chaque don effectue, l'Application ZaKaT preleve une commission de 2 % du montant du don.</strong> Cette commission est destinee a couvrir les frais de fonctionnement, de maintenance et de developpement de la plateforme.
+              </p>
+            </div>
+
+            <h3>5.3 Paiements</h3>
+            <p>
+              Les transactions financieres sont traitees par le prestataire de paiement <strong>Stripe</strong>, certifie <strong>PCI DSS niveau 1</strong>. L'Editeur ne stocke aucune donnee bancaire. Les informations de paiement sont directement transmises et traitees de maniere securisee par Stripe conformement a ses propres conditions de service et politique de confidentialite.
+            </p>
+
+            <h3>5.4 Droit de retractation</h3>
+            <p>
+              Conformement a l'article <strong>L.221-28 du Code de la consommation</strong>, le droit de retractation ne s'applique pas aux dons effectues via l'Application. En effet, le don constitue une transaction pleinement executee des sa validation par le Donateur.
+            </p>
+
+            <h3>5.5 Distribution des fonds</h3>
+            <p>
+              Les fonds collectes, apres deduction de la commission, sont integres a la Tresorerie de l'Application et distribues aux Beneficiaires dont les dossiers ont ete valides par les Administrateurs, selon des criteres transparents et equitables.
+            </p>
+          </section>
+
+          <!-- Article 6 — Demandes d'aide -->
+          <section class="policy-section" id="demandes">
+            <h2>
+              <span class="section-icon" style="background: rgba(59, 130, 246, 0.1); color: var(--accent);">&#128588;</span>
+              Article 6 — Demandes d'aide
+            </h2>
+            <p>
+              Tout Utilisateur peut soumettre une demande d'aide financiere via l'Application en constituant un dossier comprenant les informations et justificatifs requis.
+            </p>
+            <p>
+              Les Administrateurs sont charges d'evaluer chaque demande. Ils se reservent le droit de refuser toute demande sans obligation de justification, notamment en cas de dossier incomplet, d'informations insuffisantes ou de non-conformite aux criteres d'eligibilite.
+            </p>
+            <div class="warning-box">
+              <p>&#9888;&#65039; Toute fausse declaration dans un dossier de demande d'aide entrainera le rejet immediat du dossier et pourra donner lieu a des poursuites judiciaires.</p>
+            </div>
+          </section>
+
+          <!-- Article 7 — Propriete intellectuelle -->
+          <section class="policy-section" id="propriete">
+            <h2>
+              <span class="section-icon" style="background: var(--primary-light); color: var(--primary);">&#169;</span>
+              Article 7 — Propriete intellectuelle
+            </h2>
+            <p>
+              L'ensemble des elements composant l'Application (textes, graphismes, logos, icones, images, sons, logiciels, base de donnees, architecture, design, code source, etc.) est la propriete exclusive de <strong>FOODTRUCKVIEWS</strong> ou de ses partenaires et est protege par les lois francaises et internationales relatives a la propriete intellectuelle.
+            </p>
+            <p>
+              L'Utilisateur beneficie d'une licence d'utilisation personnelle, non exclusive, non cessible et non transferable, limitee a l'utilisation de l'Application conformement a sa destination et aux presentes CGU.
+            </p>
+            <p>
+              Toute reproduction, representation, modification, distribution ou exploitation de tout ou partie des elements de l'Application, par quelque moyen que ce soit, sans l'autorisation prealable et ecrite de l'Editeur, est strictement interdite et constitue un acte de contrefacon sanctionne par le Code de la propriete intellectuelle.
+            </p>
+          </section>
+
+          <!-- Article 8 — Contenus utilisateurs -->
+          <section class="policy-section" id="contenus">
+            <h2>
+              <span class="section-icon" style="background: rgba(34, 197, 94, 0.1); color: var(--success);">&#128221;</span>
+              Article 8 — Contenus utilisateurs
+            </h2>
+            <p>
+              Les Utilisateurs conservent la propriete de l'ensemble des contenus qu'ils publient ou transmettent via l'Application (textes, documents, images, etc.).
+            </p>
+            <p>
+              En publiant ou transmettant des contenus via l'Application, l'Utilisateur accorde a l'Editeur une licence non exclusive, gratuite, mondiale et pour la duree de l'utilisation du service, l'autorisant a utiliser, reproduire, adapter et afficher lesdits contenus dans le cadre du fonctionnement et de la promotion de l'Application.
+            </p>
+            <p>
+              L'Utilisateur garantit qu'il dispose de l'ensemble des droits necessaires sur les contenus qu'il publie et que ces contenus ne portent pas atteinte aux droits de tiers.
+            </p>
+          </section>
+
+          <!-- Article 9 — Responsabilite -->
+          <section class="policy-section" id="responsabilite">
+            <h2>
+              <span class="section-icon" style="background: rgba(239, 68, 68, 0.1); color: var(--error);">&#9878;</span>
+              Article 9 — Responsabilite
+            </h2>
+
+            <h3>9.1 Responsabilite de l'Editeur</h3>
+            <p>
+              L'Editeur s'engage a mettre en oeuvre tous les moyens raisonnables pour assurer le bon fonctionnement de l'Application. Toutefois, l'Application est fournie "en l'etat" et l'Editeur ne garantit pas :
+            </p>
+            <ul>
+              <li>L'absence d'interruptions, d'erreurs ou de dysfonctionnements.</li>
+              <li>La disponibilite permanente de l'Application.</li>
+              <li>L'exactitude des informations fournies par les Utilisateurs.</li>
+              <li>L'absence de fraude de la part de tiers.</li>
+            </ul>
+            <p>
+              L'Editeur ne saurait etre tenu responsable des dommages directs ou indirects resultant de l'utilisation ou de l'impossibilite d'utiliser l'Application.
+            </p>
+
+            <h3>9.2 Role d'intermediaire</h3>
+            <p>
+              L'Editeur agit en qualite d'intermediaire technique entre les Donateurs et les Beneficiaires. Il ne saurait etre tenu responsable des relations entre Utilisateurs, ni de l'utilisation finale des fonds par les Beneficiaires.
+            </p>
+          </section>
+
+          <!-- Article 10 — Disponibilite -->
+          <section class="policy-section" id="disponibilite">
+            <h2>
+              <span class="section-icon" style="background: rgba(59, 130, 246, 0.1); color: var(--accent);">&#128338;</span>
+              Article 10 — Disponibilite
+            </h2>
+            <p>
+              L'Editeur s'efforce d'assurer la disponibilite de l'Application 24 heures sur 24, 7 jours sur 7, dans la mesure du possible et selon une obligation de moyens.
+            </p>
+            <p>
+              L'Editeur se reserve toutefois le droit d'interrompre, de suspendre ou de limiter l'acces a tout ou partie de l'Application, notamment pour des raisons de :
+            </p>
+            <ul>
+              <li>Maintenance programmee ou d'urgence.</li>
+              <li>Mise a jour de l'Application.</li>
+              <li>Cas de force majeure au sens de l'article 1218 du Code civil.</li>
+              <li>Panne technique ou defaillance d'un prestataire tiers.</li>
+            </ul>
+            <p>
+              L'Editeur ne pourra etre tenu responsable des consequences de ces interruptions, sauf en cas de faute intentionnelle.
+            </p>
+          </section>
+
+          <!-- Article 11 — Suspension et resiliation -->
+          <section class="policy-section" id="suspension">
+            <h2>
+              <span class="section-icon" style="background: rgba(239, 68, 68, 0.1); color: var(--error);">&#128683;</span>
+              Article 11 — Suspension et resiliation
+            </h2>
+
+            <h3>11.1 Resiliation par l'Utilisateur</h3>
+            <p>
+              L'Utilisateur peut a tout moment supprimer son compte depuis les parametres de l'Application. La suppression du compte entraine l'effacement des donnees personnelles associees, sous reserve des obligations legales de conservation.
+            </p>
+
+            <h3>11.2 Resiliation par l'Editeur</h3>
+            <p>
+              L'Editeur se reserve le droit de suspendre ou de resilier le compte d'un Utilisateur, sans preavis ni indemnite, dans les cas suivants :
+            </p>
+            <ul>
+              <li>Non-respect des presentes CGU.</li>
+              <li>Utilisation frauduleuse de l'Application.</li>
+              <li>Fourniture de fausses informations lors de l'inscription ou dans un dossier de demande.</li>
+              <li>Comportement contraire a l'ordre public ou aux bonnes moeurs.</li>
+              <li>Atteinte a la securite ou au bon fonctionnement de l'Application.</li>
+            </ul>
+          </section>
+
+          <!-- Article 12 — Donnees personnelles -->
+          <section class="policy-section" id="donnees">
+            <h2>
+              <span class="section-icon" style="background: var(--primary-light); color: var(--primary);">&#128274;</span>
+              Article 12 — Donnees personnelles
+            </h2>
+            <p>
+              La collecte et le traitement des donnees personnelles des Utilisateurs sont regis par la Politique de Confidentialite de l'Application, accessible a l'adresse suivante :
+            </p>
+            <div class="highlight-box">
+              <p>
+                &#128279; <a href="confidentialite.html" style="color: var(--primary-dark); text-decoration: underline;"><strong>Consulter la Politique de Confidentialite</strong></a>
+              </p>
+            </div>
+            <p>
+              L'Utilisateur est invite a prendre connaissance de cette politique afin de comprendre comment ses donnees personnelles sont collectees, utilisees, stockees et protegees.
+            </p>
+          </section>
+
+          <!-- Article 13 — Modification des CGU -->
+          <section class="policy-section" id="modifications">
+            <h2>
+              <span class="section-icon" style="background: rgba(34, 197, 94, 0.1); color: var(--success);">&#128260;</span>
+              Article 13 — Modification des CGU
+            </h2>
+            <p>
+              L'Editeur se reserve le droit de modifier les presentes CGU a tout moment. Toute modification substantielle sera portee a la connaissance des Utilisateurs par le biais d'une notification dans l'Application, au moins <strong>30 jours</strong> avant son entree en vigueur.
+            </p>
+            <p>
+              La poursuite de l'utilisation de l'Application apres l'entree en vigueur des modifications vaut acceptation des CGU modifiees. En cas de desaccord avec les nouvelles conditions, l'Utilisateur est invite a supprimer son compte.
+            </p>
+            <div class="info-box">
+              <p>&#128712; Les Utilisateurs seront informes de toute modification des CGU via une notification in-app au moins 30 jours avant l'entree en vigueur des nouvelles conditions.</p>
+            </div>
+          </section>
+
+          <!-- Article 14 — Droit applicable et litiges -->
+          <section class="policy-section" id="droit-applicable">
+            <h2>
+              <span class="section-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--warning);">&#9878;</span>
+              Article 14 — Droit applicable et litiges
+            </h2>
+
+            <h3>14.1 Droit applicable</h3>
+            <p>
+              Les presentes CGU sont regies et interpretees conformement au droit francais, quel que soit le lieu d'utilisation de l'Application.
+            </p>
+
+            <h3>14.2 Mediation</h3>
+            <p>
+              Conformement aux articles L.611-1 et suivants du Code de la consommation, en cas de litige non resolu directement avec l'Editeur, l'Utilisateur peut recourir gratuitement a un mediateur de la consommation.
+            </p>
+            <p>
+              Mediateur competent : <strong>[A COMPLETER]</strong>
+            </p>
+            <p>
+              L'Utilisateur peut egalement recourir a la plateforme europeenne de reglement en ligne des litiges (ODR) accessible a l'adresse suivante : <a href="https://ec.europa.eu/consumers/odr" target="_blank" style="color: var(--primary); text-decoration: underline;">https://ec.europa.eu/consumers/odr</a>
+            </p>
+
+            <h3>14.3 Juridiction competente</h3>
+            <p>
+              A defaut de resolution amiable, tout litige relatif a l'interpretation ou a l'execution des presentes CGU sera soumis aux tribunaux competents du ressort du siege social de l'Editeur, sauf disposition legale imperative contraire applicable en matiere de droit de la consommation.
+            </p>
+          </section>
+
+          <!-- Article 15 — Dispositions diverses -->
+          <section class="policy-section" id="dispositions">
+            <h2>
+              <span class="section-icon" style="background: rgba(59, 130, 246, 0.1); color: var(--accent);">&#128220;</span>
+              Article 15 — Dispositions diverses
+            </h2>
+
+            <h3>Divisibilite</h3>
+            <p>
+              Si l'une quelconque des clauses des presentes CGU est declaree nulle ou inapplicable par une juridiction competente, les autres clauses demeureront en vigueur et produiront leurs pleins effets.
+            </p>
+
+            <h3>Non-renonciation</h3>
+            <p>
+              Le fait pour l'Editeur de ne pas exercer un droit prevu par les presentes CGU ne constitue pas une renonciation a ce droit. Toute tolerance de l'Editeur ne saurait etre interpretee comme une renonciation definitive.
+            </p>
+
+            <h3>Integralite</h3>
+            <p>
+              Les presentes CGU, ensemble avec la <a href="confidentialite.html" style="color: var(--primary); text-decoration: underline;">Politique de Confidentialite</a>, la <a href="cookies.html" style="color: var(--primary); text-decoration: underline;">Politique de Cookies</a> et les <a href="mentions-legales.html" style="color: var(--primary); text-decoration: underline;">Mentions Legales</a>, constituent l'integralite de l'accord entre l'Utilisateur et l'Editeur et remplacent tout accord anterieur relatif a l'objet des presentes.
+            </p>
+          </section>
+
+          <!-- Article 16 — Contact -->
+          <section class="policy-section" id="contact">
+            <h2>
+              <span class="section-icon" style="background: var(--primary-light); color: var(--primary);">&#9993;</span>
+              Article 16 — Contact
+            </h2>
+            <p>
+              Pour toute question relative aux presentes Conditions Generales d'Utilisation, vous pouvez nous contacter :
+            </p>
+            <ul>
+              <li><strong>Par e-mail :</strong> contact@zakat-app.com</li>
+              <li><strong>Par courrier :</strong> FOODTRUCKVIEWS, 25 Quai du President Paul Doumer, 92400 Courbevoie</li>
+              <li><strong>Via l'application :</strong> section "Support" accessible depuis le menu principal</li>
+            </ul>
+            <div class="highlight-box">
+              <p>&#128172; Notre equipe s'engage a repondre a toute demande dans les meilleurs delais. N'hesitez pas a nous contacter pour toute question relative a l'utilisation de l'Application ZaKaT.</p>
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <div class="footer-brand">
+            <img src="ima/Logo.png" alt="Zakat">
+            Zakat
+          </div>
+          <p class="footer-desc">
+            Application de gestion de dons solidaires. Simplifiez la collecte et la distribution de la Zakat.
+          </p>
+        </div>
+        <div class="footer-links">
+          <h4>Application</h4>
+          <ul>
+            <li><a href="index.html#fonctionnalites">Fonctionnalites</a></li>
+            <li><a href="index.html#comment-ca-marche">Comment ca marche</a></li>
+            <li><a href="index.html#tech">Technologies</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="confidentialite.html">Confidentialite</a></li>
+            <li><a href="mentions-legales.html">Mentions legales</a></li>
+            <li><a href="cgu.html">CGU</a></li>
+            <li><a href="cookies.html">Cookies</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Zakat. Tous droits reserves.</span>
+        <span>Fait avec &#x2764;&#xFE0F; pour la communaute</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Navbar scroll effect
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 20);
+    });
+
+    // Hamburger menu
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('navLinks');
+    hamburger.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+
+    // Close menu on link click
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => navLinks.classList.remove('open'));
+    });
+  </script>
+
+</body>
+</html>

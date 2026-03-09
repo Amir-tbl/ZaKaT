@@ -15,4 +15,6 @@ export const config = {
   stripePublishableKey: requireEnv('STRIPE_PUBLISHABLE_KEY'),
   port: parseInt(process.env.PORT || '3000', 10),
   stripeReturnBaseUrl: process.env.STRIPE_RETURN_BASE_URL || 'https://zakat-8e5a4.web.app',
+  stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET || '',
+  stripeZakatProductId: process.env.STRIPE_ZAKAT_PRODUCT_ID || '',
 };

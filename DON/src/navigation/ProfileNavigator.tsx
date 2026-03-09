@@ -6,6 +6,10 @@ import {EditProfileScreen} from '../screens/EditProfileScreen';
 import {ZakatScreen} from '../screens/ZakatScreen';
 import {AboutScreen} from '../screens/AboutScreen';
 import {LegalScreen} from '../screens/LegalScreen';
+import {MentionsLegalesScreen} from '../screens/MentionsLegalesScreen';
+import {PrivacyPolicyScreen} from '../screens/PrivacyPolicyScreen';
+import {CGUScreen} from '../screens/CGUScreen';
+import {CookiePolicyScreen} from '../screens/CookiePolicyScreen';
 import {AdminScreen} from '../screens/AdminScreen';
 import {NotificationsScreen} from '../screens/NotificationsScreen';
 import {FollowersScreen} from '../screens/FollowersScreen';
@@ -27,6 +31,10 @@ export type ProfileStackParamList = {
   Zakat: undefined;
   About: undefined;
   Legal: undefined;
+  MentionsLegales: undefined;
+  PrivacyPolicy: undefined;
+  CGU: undefined;
+  CookiePolicy: undefined;
   Admin: undefined;
   Notifications: undefined;
   Followers: undefined;
@@ -61,6 +69,10 @@ export function ProfileNavigator() {
       <Stack.Screen name="Zakat" component={ZakatScreen} />
       <Stack.Screen name="About" component={AboutScreen} />
       <Stack.Screen name="Legal" component={LegalScreen} />
+      <Stack.Screen name="MentionsLegales" component={MentionsLegalesScreen} />
+      <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
+      <Stack.Screen name="CGU" component={CGUScreen} />
+      <Stack.Screen name="CookiePolicy" component={CookiePolicyScreen} />
       <Stack.Screen name="Admin" component={AdminScreen} />
       <Stack.Screen name="Notifications" component={NotificationsScreen} />
       <Stack.Screen name="Followers" component={FollowersScreen} />

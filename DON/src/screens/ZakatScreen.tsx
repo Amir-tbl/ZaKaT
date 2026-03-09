@@ -1,4 +1,4 @@
-import React, {useState, useMemo} from 'react';
+import React, {useState, useMemo, useEffect, useCallback} from 'react';
 import {
   View,
   Text,
@@ -9,12 +9,19 @@ import {
   Switch,
   KeyboardAvoidingView,
   Platform,
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
+import {useStripe} from '@stripe/stripe-react-native';
 import {colors, spacing, typography} from '../theme';
+import {donationService} from '../services/donation';
+import {ZakatSubscription} from '../services/donation/types';
+import {auth} from '../lib/firebase';
 
+const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://10.0.2.2:3000';
 const ZAKAT_RATE = 0.025; // 2.5%
 
 const EXAMPLES = [
@@ -35,8 +42,12 @@ function formatInteger(num: number): string {
 
 export function ZakatScreen() {
   const navigation = useNavigation();
+  const {initPaymentSheet, presentPaymentSheet} = useStripe();
   const [amountText, setAmountText] = useState('');
   const [splitMonthly, setSplitMonthly] = useState(false);
+  const [subscriptionLoading, setSubscriptionLoading] = useState(false);
+  const [checkingSubscription, setCheckingSubscription] = useState(true);
+  const [existingSubscription, setExistingSubscription] = useState<ZakatSubscription | null>(null);
 
   const amount = useMemo(() => {
     const cleaned = amountText.replace(/[^0-9]/g, '');
@@ -51,14 +62,187 @@ export function ZakatScreen() {
     return zakatAmount / 12;
   }, [zakatAmount]);
 
+  const monthlyAmountCents = useMemo(() => {
+    return Math.round(monthlyAmount * 100);
+  }, [monthlyAmount]);
+
+  // Load existing subscription on mount
+  useEffect(() => {
+    loadSubscription();
+  }, []);
+
+  const loadSubscription = useCallback(async () => {
+    setCheckingSubscription(true);
+    try {
+      const sub = await donationService.getMySubscription();
+      if (sub && sub.status !== 'canceled') {
+        setExistingSubscription(sub);
+      } else {
+        setExistingSubscription(null);
+      }
+    } catch (error) {
+      console.error('Error loading subscription:', error);
+    } finally {
+      setCheckingSubscription(false);
+    }
+  }, []);
+
   const handleAmountChange = (text: string) => {
-    // Permettre uniquement les chiffres
     const cleaned = text.replace(/[^0-9]/g, '');
     setAmountText(cleaned);
   };
 
   const handleExamplePress = (exampleAmount: number) => {
     setAmountText(exampleAmount.toString());
+  };
+
+  const handleSubscribe = async () => {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      Alert.alert('Erreur', 'Vous devez etre connecte pour vous abonner');
+      return;
+    }
+
+    if (monthlyAmountCents < 100) {
+      Alert.alert('Erreur', 'Le montant mensuel minimum est de 1 EUR');
+      return;
+    }
+
+    setSubscriptionLoading(true);
+    try {
+      // 1. Create subscription on backend
+      const response = await fetch(`${API_URL}/api/create-subscription`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          amountCents: monthlyAmountCents,
+          firebaseUid: currentUser.uid,
+          email: currentUser.email,
+        }),
+      });
+
+      if (!response.ok) {
+        const errBody = await response.json().catch(() => ({}));
+        throw new Error(errBody.error || 'Erreur serveur');
+      }
+
+      const {subscriptionId, clientSecret, ephemeralKeySecret, customerId} = await response.json();
+
+      // 2. Init PaymentSheet
+      const {error: initError} = await initPaymentSheet({
+        paymentIntentClientSecret: clientSecret,
+        customerEphemeralKeySecret: ephemeralKeySecret,
+        customerId,
+        merchantDisplayName: 'ZaKaT',
+        defaultBillingDetails: {address: {country: 'FR'}},
+      });
+
+      if (initError) {
+        throw new Error(initError.message);
+      }
+
+      // 3. Present PaymentSheet
+      const {error: paymentError} = await presentPaymentSheet();
+
+      if (paymentError) {
+        if (paymentError.code === 'Canceled') {
+          return;
+        }
+        throw new Error(paymentError.message);
+      }
+
+      // 4. Save subscription in Firestore
+      await donationService.saveSubscription({
+        stripeSubscriptionId: subscriptionId,
+        stripeCustomerId: customerId,
+        status: 'active',
+        amountCents: monthlyAmountCents,
+        currency: 'eur',
+        cancelAtPeriodEnd: false,
+      });
+
+      setExistingSubscription({
+        stripeSubscriptionId: subscriptionId,
+        stripeCustomerId: customerId,
+        status: 'active',
+        amountCents: monthlyAmountCents,
+        currency: 'eur',
+        currentPeriodEnd: Math.floor(Date.now() / 1000) + 30 * 24 * 3600,
+        cancelAtPeriodEnd: false,
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      });
+
+      Alert.alert(
+        'Abonnement actif !',
+        `Votre don mensuel de ${formatNumber(monthlyAmount)} EUR a ete mis en place. Merci pour votre generosite !`,
+      );
+    } catch (e: any) {
+      Alert.alert('Erreur', e.message || 'Une erreur est survenue');
+    } finally {
+      setSubscriptionLoading(false);
+    }
+  };
+
+  const handleCancelSubscription = () => {
+    if (!existingSubscription) return;
+
+    Alert.alert(
+      'Annuler l\'abonnement',
+      'Votre abonnement restera actif jusqu\'a la fin de la periode en cours. Confirmez-vous l\'annulation ?',
+      [
+        {text: 'Non', style: 'cancel'},
+        {
+          text: 'Oui, annuler',
+          style: 'destructive',
+          onPress: async () => {
+            const currentUser = auth.currentUser;
+            if (!currentUser) return;
+
+            setSubscriptionLoading(true);
+            try {
+              const response = await fetch(`${API_URL}/api/cancel-subscription`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                  subscriptionId: existingSubscription.stripeSubscriptionId,
+                  firebaseUid: currentUser.uid,
+                }),
+              });
+
+              if (!response.ok) {
+                const errBody = await response.json().catch(() => ({}));
+                throw new Error(errBody.error || 'Erreur serveur');
+              }
+
+              await donationService.updateSubscriptionStatus('active', true);
+
+              setExistingSubscription(prev =>
+                prev ? {...prev, cancelAtPeriodEnd: true} : null,
+              );
+
+              Alert.alert(
+                'Abonnement annule',
+                'Votre abonnement sera desactive a la fin de la periode en cours.',
+              );
+            } catch (e: any) {
+              Alert.alert('Erreur', e.message || 'Une erreur est survenue');
+            } finally {
+              setSubscriptionLoading(false);
+            }
+          },
+        },
+      ],
+    );
+  };
+
+  const formatSubscriptionDate = (timestamp: number) => {
+    const date = new Date(timestamp * 1000);
+    return date.toLocaleDateString('fr-FR', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
   };
 
   return (
@@ -184,6 +368,102 @@ export function ZakatScreen() {
                     </Text>
                   </View>
                 </>
+              )}
+            </View>
+          )}
+
+          {/* Subscription Card */}
+          {splitMonthly && amount > 0 && (
+            <View style={styles.subscriptionCard}>
+              <View style={styles.subscriptionHeader}>
+                <MaterialCommunityIcons name="autorenew" size={24} color={colors.accent} />
+                <Text style={styles.subscriptionTitle}>Don mensuel automatique</Text>
+              </View>
+
+              {checkingSubscription ? (
+                <ActivityIndicator size="small" color={colors.primary} style={{marginVertical: spacing.md}} />
+              ) : existingSubscription ? (
+                // Active subscription display
+                <View>
+                  <View style={styles.subscriptionStatusRow}>
+                    <View style={[
+                      styles.statusBadge,
+                      existingSubscription.cancelAtPeriodEnd && styles.statusBadgeCanceling,
+                    ]}>
+                      <Text style={[
+                        styles.statusBadgeText,
+                        existingSubscription.cancelAtPeriodEnd && styles.statusBadgeTextCanceling,
+                      ]}>
+                        {existingSubscription.cancelAtPeriodEnd ? 'Annulation programmee' : 'Actif'}
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View style={styles.subscriptionDetail}>
+                    <Text style={styles.subscriptionDetailLabel}>Montant mensuel</Text>
+                    <Text style={styles.subscriptionDetailValue}>
+                      {formatNumber(existingSubscription.amountCents / 100)} EUR
+                    </Text>
+                  </View>
+
+                  {existingSubscription.currentPeriodEnd > 0 && (
+                    <View style={styles.subscriptionDetail}>
+                      <Text style={styles.subscriptionDetailLabel}>
+                        {existingSubscription.cancelAtPeriodEnd ? 'Actif jusqu\'au' : 'Prochain prelevement'}
+                      </Text>
+                      <Text style={styles.subscriptionDetailValue}>
+                        {formatSubscriptionDate(existingSubscription.currentPeriodEnd)}
+                      </Text>
+                    </View>
+                  )}
+
+                  {!existingSubscription.cancelAtPeriodEnd && (
+                    <TouchableOpacity
+                      style={styles.cancelButton}
+                      onPress={handleCancelSubscription}
+                      disabled={subscriptionLoading}>
+                      {subscriptionLoading ? (
+                        <ActivityIndicator size="small" color={colors.error} />
+                      ) : (
+                        <Text style={styles.cancelButtonText}>Annuler l'abonnement</Text>
+                      )}
+                    </TouchableOpacity>
+                  )}
+                </View>
+              ) : (
+                // No subscription — show subscribe option
+                <View>
+                  <Text style={styles.subscriptionDescription}>
+                    Automatisez votre Zakat en mettant en place un prelevement mensuel
+                    de {formatNumber(monthlyAmount)} EUR vers le tresor ZaKaT.
+                  </Text>
+
+                  <TouchableOpacity
+                    style={[
+                      styles.subscribeButton,
+                      (subscriptionLoading || monthlyAmountCents < 100) && styles.subscribeButtonDisabled,
+                    ]}
+                    onPress={handleSubscribe}
+                    disabled={subscriptionLoading || monthlyAmountCents < 100}>
+                    {subscriptionLoading ? (
+                      <ActivityIndicator color={colors.surface} />
+                    ) : (
+                      <>
+                        <MaterialCommunityIcons name="credit-card-check-outline" size={20} color={colors.surface} />
+                        <Text style={styles.subscribeButtonText}>
+                          S'abonner au don mensuel ({formatNumber(monthlyAmount)} EUR/mois)
+                        </Text>
+                      </>
+                    )}
+                  </TouchableOpacity>
+
+                  <View style={styles.subscriptionNotice}>
+                    <MaterialCommunityIcons name="shield-check-outline" size={14} color={colors.mutedText} />
+                    <Text style={styles.subscriptionNoticeText}>
+                      Paiement securise par Stripe. Annulable a tout moment.
+                    </Text>
+                  </View>
+                </View>
               )}
             </View>
           )}
@@ -398,6 +678,110 @@ const styles = StyleSheet.create({
     backgroundColor: colors.border,
     marginVertical: spacing.sm,
   },
+
+  // Subscription card
+  subscriptionCard: {
+    backgroundColor: colors.surface,
+    borderRadius: 16,
+    padding: spacing.lg,
+    marginBottom: spacing.lg,
+    borderWidth: 2,
+    borderColor: colors.accent,
+  },
+  subscriptionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: spacing.md,
+  },
+  subscriptionTitle: {
+    ...typography.h3,
+    color: colors.accent,
+    marginLeft: spacing.sm,
+  },
+  subscriptionDescription: {
+    ...typography.body,
+    color: colors.mutedText,
+    lineHeight: 22,
+    marginBottom: spacing.lg,
+  },
+  subscribeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.sm,
+    backgroundColor: colors.accent,
+    paddingVertical: spacing.md,
+    borderRadius: 12,
+    marginBottom: spacing.sm,
+  },
+  subscribeButtonDisabled: {
+    opacity: 0.5,
+  },
+  subscribeButtonText: {
+    color: colors.surface,
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  subscriptionNotice: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.xs,
+    paddingVertical: spacing.xs,
+  },
+  subscriptionNoticeText: {
+    ...typography.caption,
+    color: colors.mutedText,
+    fontSize: 12,
+  },
+  subscriptionStatusRow: {
+    flexDirection: 'row',
+    marginBottom: spacing.md,
+  },
+  statusBadge: {
+    backgroundColor: colors.primary + '20',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    borderRadius: 8,
+  },
+  statusBadgeCanceling: {
+    backgroundColor: '#FFA50020',
+  },
+  statusBadgeText: {
+    ...typography.caption,
+    color: colors.primary,
+    fontWeight: '600',
+  },
+  statusBadgeTextCanceling: {
+    color: '#FFA500',
+  },
+  subscriptionDetail: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: spacing.sm,
+  },
+  subscriptionDetailLabel: {
+    ...typography.body,
+    color: colors.mutedText,
+  },
+  subscriptionDetailValue: {
+    ...typography.body,
+    fontWeight: '600',
+  },
+  cancelButton: {
+    alignItems: 'center',
+    paddingVertical: spacing.md,
+    marginTop: spacing.sm,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+  },
+  cancelButtonText: {
+    ...typography.body,
+    color: colors.error,
+    fontWeight: '600',
+  },
+
   examplesCard: {
     backgroundColor: colors.surface,
     borderRadius: 16,
